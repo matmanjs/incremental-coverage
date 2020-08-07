@@ -1,3 +1,5 @@
+import fs from 'fs-extra';
+import path from 'path';
 import child from 'child_process';
 import { File } from 'gitdiff-parser';
 import { Parser } from './index';
@@ -9,15 +11,18 @@ import gitdiffParser = require('gitdiff-parser');
 
 export class DiffParser implements Parser {
   // git hash
-  hash: string;
+  private hash: string;
 
   // git 输出的内容
-  stdout: string | Buffer = '';
+  private stdout: string | Buffer = '';
 
   // exec 参数
-  opt: child.ExecOptions;
+  private opt: child.ExecOptions;
 
   constructor(hash: string, opt: child.ExecOptions = {}) {
+    if (typeof hash !== 'string') {
+      this.hash = '';
+    }
     this.hash = hash;
 
     this.opt = opt;
@@ -33,6 +38,13 @@ export class DiffParser implements Parser {
    * 执行 git diff 命令
    */
   private async exec() {
+    // 判断是否为 git 仓库文件夹
+    const rootPath = path.resolve(this.opt.cwd || process.cwd(), '.git');
+    if (!fs.existsSync(rootPath)) {
+      throw new Error('请选择 git 仓库运行');
+    }
+
+    // 执行 diff
     this.stdout = await new Promise((resolve, reject) => {
       child.exec(`git diff ${this.hash}`, this.opt, (err, stdout) => {
         if (err) {
@@ -43,6 +55,9 @@ export class DiffParser implements Parser {
     });
   }
 
+  /**
+   * 解析 git diff 数据
+   */
   private parserDiff(): File[] {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
