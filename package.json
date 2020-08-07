@@ -1,0 +1,26 @@
+{
+  "name": "git-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -d",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gitdiff-parser": "^0.2.2",
+    "lcov-parse": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.9",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "@umijs/fabric": "^2.2.2",
+    "eslint": "^7.6.0",
+    "jest": "^26.2.2",
+    "typescript": "^3.9.7"
+  }
+}
