@@ -3,3 +3,5 @@ export interface Parser {
 }
 
 export * from './lcov';
+export * from './diff';
+export * from './log';

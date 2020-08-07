@@ -3,7 +3,7 @@ import path from 'path';
 import { gitlogPromise, GitlogOptions } from 'gitlog';
 import { Parser } from './index';
 
-export class DiffParser implements Parser {
+export class LogParser implements Parser {
   // gitlogPromise 参数
   private opt: GitlogOptions;
 
