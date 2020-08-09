@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import { Parser } from './index';
 import { Info, DetailLines } from '../types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -14,6 +15,13 @@ export class LcovParser implements Parser {
   parserRes: any;
 
   constructor(path: string) {
+    if (!path || !(typeof path === 'string')) {
+      throw new Error('请传递 string');
+    }
+    if (!fs.existsSync(path)) {
+      throw new Error('路径不存在');
+    }
+
     this.path = path;
   }
 

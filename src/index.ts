@@ -1,1 +1,1 @@
-export * from './parsers';
+export { DiffParser, LcovParser, LogParser } from './parsers';
