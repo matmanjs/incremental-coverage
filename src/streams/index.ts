@@ -18,3 +18,6 @@ export abstract class Stream {
     return yaml.safeDump(this.content);
   }
 }
+
+export * from './file';
+export * from './stdout';
