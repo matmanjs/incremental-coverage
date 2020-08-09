@@ -2,10 +2,12 @@
   "name": "git-parser",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "bin": "lib/cli.js",
   "scripts": {
     "build": "tsc -d",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "",
