@@ -48,6 +48,7 @@ export class BaseProcess<T extends keyof Mapper> {
       increRate: string;
     };
     files: {
+      name: string;
       increLine?: number;
       covLine?: number;
       increRate?: string;
@@ -132,11 +133,12 @@ export class BaseProcess<T extends keyof Mapper> {
           // 计算本文件的覆盖率
           const info = this.lcov[lcovItem] as DetailLines;
           const temp: {
+            name: string;
             increLine: number;
             covLine: number;
             increRate: string;
             detail: { number: number; hits: number }[];
-          } = { increLine: 0, covLine: 0, increRate: '', detail: [] };
+          } = { increLine: 0, covLine: 0, increRate: '', detail: [], name: lcovItem };
 
           // 统计变换了的行号
           const diffLineArr: Array<number> = [];
