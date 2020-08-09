@@ -3,7 +3,7 @@ import { Stream } from './index';
 
 type IOType = 'stdout' | 'stderr';
 
-interface StdoutStreamOpt {
+export interface StdoutStreamOpt {
   ioType?: IOType;
   type?: 'json' | 'yaml';
 }

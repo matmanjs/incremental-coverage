@@ -18,8 +18,8 @@ export class LcovParser implements Parser {
     if (!path || !(typeof path === 'string')) {
       throw new Error('请传递 string');
     }
-    if (!fs.existsSync(path)) {
-      throw new Error('路径不存在');
+    if (!fs.existsSync(path) || !fs.statSync(path).isFile()) {
+      throw new Error('文件不存在');
     }
 
     this.path = path;

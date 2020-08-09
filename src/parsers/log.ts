@@ -31,7 +31,7 @@ export class LogParser implements Parser {
     }
 
     // 执行 log
-    const log = await gitlogPromise(this.opt);
+    const log = await gitlogPromise({ ...this.opt, number: 10000 });
 
     return log;
   }

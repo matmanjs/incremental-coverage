@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dayjs": "^1.8.32",
     "fs-extra": "^9.0.1",
     "gitdiff-parser": "^0.2.2",
     "gitlog": "^4.0.0",

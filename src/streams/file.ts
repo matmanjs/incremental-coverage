@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { Stream } from './index';
 
-interface FileStreamOpt {
+export interface FileStreamOpt {
   type?: 'json' | 'yaml';
   filePath?: string;
 }
