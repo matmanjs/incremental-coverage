@@ -20,10 +20,10 @@ export class DiffParser implements Parser {
   private opt: child.ExecOptions;
 
   constructor(hash: string, opt: child.ExecOptions = {}) {
+    this.hash = hash;
     if (typeof hash !== 'string') {
       this.hash = '';
     }
-    this.hash = hash;
 
     this.opt = opt;
   }

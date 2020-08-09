@@ -13,9 +13,9 @@ export interface Mapper {
 export interface BaseProcessOpts<T extends keyof Mapper> {
   since?: string;
   cwd?: string;
-  stream?: {
-    name: T;
-    opts: T extends 'stdio' ? StdoutStreamOpt : FileStreamOpt;
+  stream: {
+    name?: T;
+    opts?: T extends 'stdio' ? StdoutStreamOpt : FileStreamOpt;
   };
 }
 
@@ -31,7 +31,9 @@ interface CommitBase {
 export class BaseProcess<T extends keyof Mapper> {
   lcovPath: string;
 
-  opts: BaseProcessOpts<T> = {};
+  opts: BaseProcessOpts<T> = {
+    stream: {},
+  };
 
   private lcov: Info = {};
 
@@ -53,7 +55,7 @@ export class BaseProcess<T extends keyof Mapper> {
     }[];
   } = { total: { increLine: 0, covLine: 0, increRate: '' }, files: [] };
 
-  constructor(lcovPath: string, opts: BaseProcessOpts<T> = {}) {
+  constructor(lcovPath: string, opts: BaseProcessOpts<T> = { stream: {} }) {
     if (typeof lcovPath !== 'string') {
       throw new Error('请传递 lcov 文件路径');
     }
@@ -64,14 +66,18 @@ export class BaseProcess<T extends keyof Mapper> {
     const startDay = dayjs().startOf('month').format('YYYY-MM-DD');
     this.opts.cwd = opts.cwd || process.cwd();
     this.opts.since = opts.since || startDay;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.opts.stream.name = opts.stream.name || 'file';
+    this.opts.stream.opts = opts.stream.opts;
   }
 
   async exec(): Promise<void> {
-    this.getLcov();
+    await this.getLcov();
 
-    this.getLog();
+    await this.getLog();
 
-    this.getDiff();
+    await this.getDiff();
 
     this.format();
 
