@@ -1,9 +1,11 @@
 {
-  "name": "git-parser",
+  "name": "incremental-coverage",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
-  "bin": "lib/cli.js",
+  "bin": {
+    "incremental-coverage": "lib/index.js"
+  },
   "scripts": {
     "build": "tsc -d",
     "test": "jest",
