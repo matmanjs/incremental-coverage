@@ -1,40 +1,29 @@
-import { BaseProcess, BaseProcessOpts, Mapper } from './index';
+import { Worker } from 'worker_threads';
+import { resolve } from 'path';
+import { BaseProcessOpts, Mapper } from './index';
+
+const share = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
 
 /**
  * 得到增量统计的同步方法
  * @param path lcov 文件的路径
  * @param opts 操作参数
  */
-export const getIncreaseSync = async <T extends keyof Mapper>(
+export const getIncreaseSync = <T extends keyof Mapper>(
   path: string,
   opts?: BaseProcessOpts<T>,
-): Promise<void> => {
-  let flag = false;
-  let err: Error;
+): void => {
+  // eslint-disable-next-line no-new
+  new Worker(resolve(__dirname, 'exec.js'), {
+    workerData: {
+      path,
+      opts,
+      share,
+    },
+  });
 
-  const timer = setTimeout(() => {
-    err = new Error('操作超时');
-    flag = true;
-  }, 10 * 1000);
-
-  new BaseProcess(path, opts)
-    .exec()
-    .then(() => {
-      clearTimeout(timer);
-      flag = true;
-    })
-    .catch((e) => {
-      clearTimeout(timer);
-      err = e;
-      flag = true;
-    });
+  const able = new Int32Array(share);
 
   // eslint-disable-next-line no-empty
-  while (!flag) {}
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (err) {
-    throw err;
-  }
+  while (!able[0]) {}
 };
