@@ -6,6 +6,7 @@ const share = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
 
 /**
  * 得到增量统计的同步方法
+ * 一般不推荐使用, 除非一些特殊情况
  * @param path lcov 文件的路径
  * @param opts 操作参数
  */

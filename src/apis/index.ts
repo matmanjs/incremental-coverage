@@ -13,10 +13,26 @@ export interface Mapper {
 export interface BaseProcessOpts<T extends keyof Mapper> {
   since?: string;
   cwd?: string;
+  output?: boolean;
   stream: {
     name?: T;
     opts?: T extends 'stdio' ? StdoutStreamOpt : FileStreamOpt;
   };
+}
+
+export interface FormatData {
+  total: {
+    increLine: number;
+    covLine: number;
+    increRate: string;
+  };
+  files: {
+    name: string;
+    increLine?: number;
+    covLine?: number;
+    increRate?: string;
+    detail?: { number: number; hits: number }[];
+  }[];
 }
 
 interface CommitBase {
@@ -41,20 +57,10 @@ export class BaseProcess<T extends keyof Mapper> {
 
   private diffData: File[] = [];
 
-  private formatData: {
-    total: {
-      increLine: number;
-      covLine: number;
-      increRate: string;
-    };
-    files: {
-      name: string;
-      increLine?: number;
-      covLine?: number;
-      increRate?: string;
-      detail?: { number: number; hits: number }[];
-    }[];
-  } = { total: { increLine: 0, covLine: 0, increRate: '' }, files: [] };
+  private formatData: FormatData = {
+    total: { increLine: 0, covLine: 0, increRate: '' },
+    files: [],
+  };
 
   constructor(lcovPath: string, opts: BaseProcessOpts<T> = { stream: {} }) {
     if (typeof lcovPath !== 'string') {
@@ -73,7 +79,7 @@ export class BaseProcess<T extends keyof Mapper> {
     this.opts.stream.opts = opts.stream.opts;
   }
 
-  async exec(): Promise<void> {
+  async exec(): Promise<FormatData> {
     await this.getLcov();
 
     await this.getLog();
@@ -82,7 +88,11 @@ export class BaseProcess<T extends keyof Mapper> {
 
     this.format();
 
-    this.output();
+    if (this.opts.output) {
+      this.output();
+    }
+
+    return this.formatData;
   }
 
   /**

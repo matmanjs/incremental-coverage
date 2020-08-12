@@ -1,4 +1,4 @@
-import { BaseProcess, BaseProcessOpts, Mapper } from './index';
+import { BaseProcess, BaseProcessOpts, Mapper, FormatData } from './index';
 
 /**
  * 得到增量统计的异步方法
@@ -8,6 +8,8 @@ import { BaseProcess, BaseProcessOpts, Mapper } from './index';
 export const getIncrease = async <T extends keyof Mapper>(
   path: string,
   opts?: BaseProcessOpts<T>,
-): Promise<void> => {
-  await new BaseProcess(path, opts).exec();
+): Promise<FormatData> => {
+  const res = await new BaseProcess(path, opts).exec();
+
+  return res;
 };
