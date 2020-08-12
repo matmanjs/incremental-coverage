@@ -11,6 +11,11 @@
     "test": "jest",
     "prepublishOnly": "npm run build"
   },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

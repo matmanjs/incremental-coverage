@@ -29,7 +29,7 @@ $ yarn add global incremental-coverage
 我们通过一个简单的命令行工具来展示如何使用（必须在 Git 仓库根目录中运行，且指定 lcov 文件）。
 
 ```sh
-$ git-parser -p="./.dwt_output/e2e/coverage/lcov.info" -t="2020-06-01"
+$ incremental-coverage -p="./.dwt_output/e2e/coverage/lcov.info" -t="2020-06-01"
 ```
 
 - 上面这条命令指定 `./.dwt_output/e2e/coverage/lcov.info` 覆盖率文件
