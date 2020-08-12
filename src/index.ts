@@ -1,2 +1,2 @@
 export { DiffParser, LcovParser, LogParser } from './parsers';
-export { getIncrease, getIncreaseSync } from './apis';
+export { getIncrease, getIncreaseSync, FormatData } from './apis';
