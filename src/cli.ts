@@ -9,17 +9,17 @@ import { getIncrease } from './apis';
     .option('path', {
       alias: 'p',
       demandOption: true,
-      describe: 'lcov.info path',
+      describe: 'lcov.info 文件路径',
       type: 'string',
     })
     .option('time', {
       alias: 't',
-      describe: 'git diff start time',
+      describe: '增量起始时间',
       type: 'string',
     })
     .option('output', {
       alias: 'o',
-      describe: 'switch stream',
+      describe: '选择输出方式',
       default: 'file',
       choices: ['file', 'stdio'],
     })
@@ -27,6 +27,7 @@ import { getIncrease } from './apis';
 
   await getIncrease(res.path, {
     since: res.time,
+    output: true,
     stream: {
       name: res.output as 'file' | 'stdio',
     },

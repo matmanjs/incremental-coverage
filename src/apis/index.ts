@@ -77,6 +77,7 @@ export class BaseProcess<T extends keyof Mapper> {
     // @ts-ignore
     this.opts.stream.name = opts.stream.name || 'file';
     this.opts.stream.opts = opts.stream.opts;
+    this.opts.output = opts.output;
   }
 
   async exec(): Promise<FormatData> {
