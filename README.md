@@ -97,15 +97,99 @@ CLI 没有子命令只有最简单的三个选项：
 
 #### DiffParser
 
-返回格式化的 Git Diff 数据
+```typescript
+export declare class DiffParser implements Parser {
+  constructor(hash: string, opt?: child.ExecOptions);
+  run(): Promise<File[]>;
+}
+```
+
+- `hash`：需要进行 Diff 的 Commit ID
+- `opt`：与子进程接受的参数相同可以 [参考](http://nodejs.cn/api/child_process.html#child_process_child_process_exec_command_options_callback)
+- `File`：本数据结构如下（使用 [gitdiff-parser](https://github.com/ecomfe/gitdiff-parser)）
+
+```typescript
+export interface Change {
+  content: string;
+  type: 'insert' | 'delete' | 'normal';
+  isInsert?: boolean;
+  isDelete?: boolean;
+  isNormal?: boolean;
+  lineNumber?: number;
+  oldLineNumber?: number;
+  newLineNumber?: number;
+}
+
+export interface Hunk {
+  content: string;
+  oldStart: number;
+  newStart: number;
+  oldLines: number;
+  newLines: number;
+  changes: Change[];
+}
+
+export interface File {
+  hunks: Hunk[];
+  oldEndingNewLine: boolean;
+  newEndingNewLine: boolean;
+  oldMode: string;
+  newMode: string;
+  similarity?: number;
+  oldRevision: string;
+  newRevision: string;
+  oldPath: string;
+  newPath: string;
+  isBinary?: boolean;
+  type: 'add' | 'delete' | 'modify' | 'rename';
+}
+```
 
 #### LogParser
 
-返回格式化的 Git Log 数据
+```typescript
+export declare class LogParser implements Parser {
+  constructor(opt?: GitlogOptions);
+  run(): Promise<
+    (Record<'abbrevHash' | 'hash' | 'subject' | 'authorName' | 'authorDate' | 'status', string> & {
+      files: string[];
+    })[]
+  >;
+}
+```
+
+- `opt` 以及返回数据都可以 [参考](https://github.com/domharrington/node-gitlog)
 
 #### LcovParser
 
-返回格式化的 Lcov 数据
+```typescript
+export declare class LcovParser implements Parser {
+  constructor(path: string);
+  run(): Promise<Info>;
+}
+```
+
+- `path`：lcov 文件的路径
+- `Info`：格式化之后的数据，如下
+
+```typescript
+// 覆盖率测试报告格式化数据结构
+export interface Total {
+  linesCovered: number;
+  linesValid: number;
+}
+
+export interface DetailLines {
+  lineRate: number;
+  lines: {
+    branch: string;
+    hits: number;
+    number: string;
+  }[];
+}
+
+export type Info = Record<string | '$', Total | DetailLines>;
+```
 
 ## License
 
