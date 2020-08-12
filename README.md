@@ -60,6 +60,53 @@ $ incremental-coverage -p="./.dwt_output/e2e/coverage/lcov.info" -t="2020-06-01"
 
 > 提供 `命令行` 与 `Node.js` 调用两种形式
 
+### 命令行
+
+CLI 没有子命令只有最简单的三个选项：
+
+- `--path、-p`：指定 lcov.info 文件的路径
+- `--time、-t`：执行增量计算的开始时间（建议不要太长）
+- `--output、-o`：结果的输出方式，可以选择 `file 与 stdio`，默认为 file
+
+### API
+
+>  Incremental Coverage 对外暴露两个 API 与三个 Parser
+
+#### getIncrease
+
+##### params
+
+- `path`：lcov.info 文件的路径
+- `opts`：配置选项
+  - `cwd`：String，git 命令运行的路径
+  - `since`：String，增量起始计算时间
+  - `output`：Boolean，是否需要输出
+  - `stream`：Object，针对输出流的配置
+    - `name`：file 或者 stdio
+    - `opts`：包含 `type` 输出格式，可选 `json`、`yaml`；`filePath`（name 为 file 时生效）指定输出文件路径；`ioType`（name 为 stdio 时生效），可选 stdout、stderr
+
+##### return
+
+格式化后的数据，与上面的示例文件保持一致
+
+#### getIncreaseSync
+
+与 `getIncrease` 保持一致，不过为同步方法，不推荐使用
+
+>Parser 统一实现 Parser 接口，仅仅暴露一个 run 方法
+
+#### DiffParser
+
+返回格式化的 Git Diff 数据
+
+#### LogParser
+
+返回格式化的 Git Log 数据
+
+#### LcovParser
+
+返回格式化的 Lcov 数据
+
 ## License
 
 Incremental Coverage 使用 [MIT 开源协议](https://github.com/matmanjs/incremental-coverage/blob/master/LICENSE)。
