@@ -56,6 +56,8 @@ export class LcovParser implements Parser {
       found += item.lines.found;
       hit += item.lines.hit;
       const temp: DetailLines = {
+        linesCovered: item.lines.hit,
+        linesValid: item.lines.found,
         lineRate: item.lines.hit / item.lines.found,
         lines: [],
       };

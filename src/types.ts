@@ -5,6 +5,8 @@ export interface Total {
 }
 
 export interface DetailLines {
+  linesCovered: number;
+  linesValid: number;
   lineRate: number;
   lines: {
     branch: string;

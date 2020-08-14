@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
-import { getIncrease } from './apis';
+import { getIncrease } from './apis/getIncrease';
 
 (async () => {
   const res = yargs
