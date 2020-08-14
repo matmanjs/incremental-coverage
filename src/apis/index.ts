@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { File } from 'gitdiff-parser';
 import { LcovParser, LogParser, DiffParser } from '../parsers';
 import { FileStreamOpt, StdoutStreamOpt, Stream, FileStream, StdoutStream } from '../streams';
-import { Info, DetailLines } from '../types';
+import { Locv } from '../types';
 
 export interface Mapper {
   stdio: StdoutStreamOpt;
@@ -51,7 +51,7 @@ export class BaseProcess<T extends keyof Mapper> {
     stream: {},
   };
 
-  private lcov: Info = {};
+  private lcov: Locv = { detail: {} };
 
   private firstGitMessage: CommitBase = {};
 
@@ -138,11 +138,11 @@ export class BaseProcess<T extends keyof Mapper> {
    * 进行格式化进行结果输出
    */
   private format() {
-    Object.keys(this.lcov).forEach((lcovItem) => {
+    Object.keys(this.lcov.detail).forEach((lcovItem) => {
       this.diffData.forEach((diffItem) => {
         if (lcovItem.toLocaleLowerCase().includes(diffItem.newPath.toLocaleLowerCase())) {
           // 计算本文件的覆盖率
-          const info = this.lcov[lcovItem] as DetailLines;
+          const info = this.lcov.detail[lcovItem];
           const temp: {
             name: string;
             increLine: number;

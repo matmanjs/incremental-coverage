@@ -188,7 +188,10 @@ export interface DetailLines {
   }[];
 }
 
-export type Info = Record<string | '$', Total | DetailLines>;
+export interface Locv {
+  detail: Record<string, DetailLines>;
+  $?: Total;
+}
 ```
 
 ## License

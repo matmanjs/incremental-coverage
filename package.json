@@ -4,7 +4,10 @@
   "description": "",
   "main": "lib/index.js",
   "bin": {
-    "incremental-coverage": "lib/index.js"
+    "incremental-coverage": "lib/cli.js"
+  },
+  "repository": {
+    "url": "https://github.com/matmanjs/incremental-coverage.git"
   },
   "scripts": {
     "build": "tsc -d",
