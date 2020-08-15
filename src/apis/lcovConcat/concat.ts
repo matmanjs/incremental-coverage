@@ -1,9 +1,9 @@
-import { Locv, DetailLines } from '../../types';
+import { Lcov, DetailLines } from '../../types';
 
 export class LcovConcat {
-  private res: Locv | null = null;
+  private res: Lcov | null = null;
 
-  concat(lcov: Locv): void {
+  concat(lcov: Lcov): void {
     if (this.res === null) {
       this.res = lcov;
       return;
@@ -11,7 +11,7 @@ export class LcovConcat {
 
     let hits = 0;
     let found = 0;
-    const tempRes: Locv = { detail: {} };
+    const tempRes: Lcov = { detail: {} };
 
     Object.keys(this.res.detail).forEach((resItem) => {
       if (lcov.detail[resItem]) {

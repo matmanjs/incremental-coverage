@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { File } from 'gitdiff-parser';
 import { LcovParser, LogParser, DiffParser } from '../../parsers';
 import { FileStreamOpt, StdoutStreamOpt, Stream, FileStream, StdoutStream } from '../../streams';
-import { Locv } from '../../types';
+import { Lcov } from '../../types';
 
 export interface Mapper {
   stdio: StdoutStreamOpt;
@@ -51,7 +51,7 @@ export class BaseProcess<T extends keyof Mapper> {
     stream: {},
   };
 
-  private lcov: Locv = { detail: {} };
+  private lcov: Lcov = { detail: {} };
 
   private firstGitMessage: CommitBase = {};
 

@@ -15,7 +15,7 @@ export interface DetailLines {
   }[];
 }
 
-export interface Locv {
+export interface Lcov {
   detail: Record<string, DetailLines>;
   $?: Total;
 }

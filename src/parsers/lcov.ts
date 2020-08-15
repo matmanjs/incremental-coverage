@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { Parser } from './index';
-import { Locv, DetailLines } from '../types';
+import { Lcov, DetailLines } from '../types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line import/order
@@ -25,7 +25,7 @@ export class LcovParser implements Parser {
     this.path = path;
   }
 
-  async run(): Promise<Locv> {
+  async run(): Promise<Lcov> {
     await this.parserLcov();
     return this.format();
   }
@@ -47,8 +47,8 @@ export class LcovParser implements Parser {
   /**
    * 将文件格式化为需要的格式
    */
-  private format(): Locv {
-    const lcov: Locv = { detail: {} };
+  private format(): Lcov {
+    const lcov: Lcov = { detail: {} };
     let found = 0;
     let hit = 0;
 
