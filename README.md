@@ -95,6 +95,22 @@ CLI 没有子命令只有最简单的三个选项：
 
 >Parser 统一实现 Parser 接口，仅仅暴露一个 run 方法
 
+#### lcovConcat
+
+##### params
+
+- `...args: Lcov`：LcovParser 格式化时候的数据
+
+##### return
+
+合并之后的数据
+
+##### example
+
+```js
+console.log(lcovParser(lcov1, lcov2));
+```
+
 #### DiffParser
 
 ```typescript
