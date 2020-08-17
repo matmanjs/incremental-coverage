@@ -5,6 +5,8 @@ export interface Total {
 }
 
 export interface DetailLines {
+  linesCovered: number;
+  linesValid: number;
   lineRate: number;
   lines: {
     branch: string;
@@ -13,7 +15,7 @@ export interface DetailLines {
   }[];
 }
 
-export interface Locv {
+export interface Lcov {
   detail: Record<string, DetailLines>;
   $?: Total;
 }

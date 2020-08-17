@@ -1,3 +1,3 @@
+export * from './apis';
 export { DiffParser, LcovParser, LogParser } from './parsers';
-export { getIncrease, getIncreaseSync, FormatData } from './apis';
-export { Locv, DetailLines, Total } from './types';
+export { Lcov, DetailLines, Total } from './types';
