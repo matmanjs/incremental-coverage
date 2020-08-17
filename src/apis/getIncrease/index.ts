@@ -1,4 +1,5 @@
 import os from 'os';
+import { execSync } from 'child_process';
 import dayjs from 'dayjs';
 import { File } from 'gitdiff-parser';
 import { LcovParser, LogParser, DiffParser } from '../../parsers';
@@ -44,6 +45,21 @@ export interface CommitBase {
   authorDate?: string;
 }
 
+interface FirstInfo {
+  hash?: string;
+  abbrevHash?: string;
+  subject?: string;
+  authorName?: string;
+  authorDate?: string;
+  authorEmail?: string;
+}
+
+export interface IncresseResult {
+  data: FormatData;
+  commit: CommitBase;
+  createInfo: FirstInfo;
+}
+
 export class BaseProcess<T extends keyof Mapper> {
   lcovPath: string;
 
@@ -61,6 +77,8 @@ export class BaseProcess<T extends keyof Mapper> {
     total: { increLine: 0, covLine: 0, increRate: '' },
     files: [],
   };
+
+  private firstInfo: FirstInfo | undefined;
 
   constructor(lcovPath: string, opts: BaseProcessOpts<T> = { stream: {} }) {
     if (typeof lcovPath !== 'string') {
@@ -80,7 +98,7 @@ export class BaseProcess<T extends keyof Mapper> {
     this.opts.output = opts.output;
   }
 
-  async exec(): Promise<{ data: FormatData; commit: CommitBase }> {
+  async exec(): Promise<IncresseResult> {
     await this.getLcov();
 
     await this.getLog();
@@ -89,11 +107,17 @@ export class BaseProcess<T extends keyof Mapper> {
 
     this.format();
 
+    this.createInfo();
+
     if (this.opts.output) {
       this.output();
     }
 
-    return { data: this.formatData, commit: this.firstGitMessage };
+    return {
+      data: this.formatData,
+      commit: this.firstGitMessage,
+      createInfo: this.firstInfo as FirstInfo,
+    };
   }
 
   /**
@@ -214,12 +238,20 @@ export class BaseProcess<T extends keyof Mapper> {
 
     if (this.opts.stream?.name === 'file') {
       tempStream = new FileStream(
-        { data: this.formatData, commit: this.firstGitMessage },
+        {
+          data: this.formatData,
+          commit: this.firstGitMessage,
+          createInfo: this.firstInfo as FirstInfo,
+        },
         this.opts.stream.opts,
       );
     } else if (this.opts.stream?.name === 'stdio') {
       tempStream = new StdoutStream(
-        { data: this.formatData, commit: this.firstGitMessage },
+        {
+          data: this.formatData,
+          commit: this.firstGitMessage,
+          createInfo: this.firstInfo as FirstInfo,
+        },
         this.opts.stream.opts,
       );
     } else {
@@ -227,6 +259,27 @@ export class BaseProcess<T extends keyof Mapper> {
     }
 
     tempStream.outToStream();
+  }
+
+  /**
+   * 得到仓库第一次提交的信息
+   */
+  private createInfo() {
+    const res = execSync('git log --reverse --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"', {
+      cwd: this.opts.cwd,
+    })
+      .toString()
+      .split('\n');
+    const first = res[0].split('!!!');
+
+    this.firstInfo = {
+      hash: first[0],
+      abbrevHash: first[1],
+      authorName: first[2],
+      authorEmail: first[3],
+      authorDate: first[4],
+      subject: first[5],
+    };
   }
 }
 

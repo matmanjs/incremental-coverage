@@ -99,7 +99,7 @@ CLI 没有子命令只有最简单的三个选项：
 
 ##### params
 
-- `...args: Lcov`：LcovParser 格式化时候的数据
+- `...args: string[]`：lcov.info 文件路径
 
 ##### return
 
