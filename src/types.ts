@@ -9,7 +9,6 @@ export interface DetailLines {
   linesValid: number;
   lineRate: number;
   lines: {
-    branch: string;
     hits: number;
     number: string;
   }[];

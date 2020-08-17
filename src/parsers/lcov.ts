@@ -66,7 +66,6 @@ export class LcovParser implements Parser {
         temp.lines.push({
           number: detail.line,
           hits: detail.hit,
-          branch: '',
         });
       });
 
