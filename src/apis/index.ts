@@ -1,2 +1,2 @@
 export { getIncrease, getIncreaseSync, FormatData } from './getIncrease';
-export { LcovConcat, lcovConcat } from './lcovConcat';
+export { LcovConcat, lcovConcat, increaseLcovConcat } from './lcovConcat';

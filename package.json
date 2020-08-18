@@ -11,8 +11,10 @@
   },
   "scripts": {
     "build": "tsc -d",
-    "test": "jest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "npm run test:cover",
+    "test:unit": "mocha 'test/**/*.test.{ts,tsx}'",
+    "test:cover": "nyc npm run test:unit"
   },
   "files": [
     "lib",
@@ -33,16 +35,20 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.12",
+    "@types/expect": "^24.3.0",
     "@types/fs-extra": "^9.0.1",
-    "@types/jest": "^26.0.9",
     "@types/js-yaml": "^3.12.5",
+    "@types/mocha": "^8.0.3",
     "@types/yargs": "^15.0.5",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
     "@umijs/fabric": "^2.2.2",
+    "chai": "^4.2.0",
     "eslint": "^7.6.0",
-    "jest": "^26.2.2",
-    "ts-jest": "^26.1.4",
+    "mocha": "^8.1.1",
+    "nyc": "^15.1.0",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   }
 }
