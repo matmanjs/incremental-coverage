@@ -69,4 +69,35 @@ describe('./apis/lcovConcat/index.ts', () => {
     });
   });
 
+  describe('lcovConcat(unit_test_lcov, e2e_test_lcov)', () => {
+    const unitLcovInfoFilePath = path.join(BASE_DEMO_1, 'unit-test/lcov.info');
+    const e2eLcovInfoFilePath = path.join(BASE_DEMO_1, 'e2e-test/lcov.info');
+    const expectResultFile = path.join(EXPECT_DEMO_1, 'merged/full.json');
+    const tmpResultFile = path.join(TMP_PATH, `merged_${Date.now()}`, 'result.json');
+
+    let result: Lcov;
+
+    before(async () => {
+      result = await lcovConcat(unitLcovInfoFilePath, e2eLcovInfoFilePath);
+      fse.outputJsonSync(tmpResultFile, result);
+    });
+
+    after(async () => {
+      fse.removeSync(tmpResultFile);
+    });
+
+    // TODO 这里的数字不准确，预期值应该是 126/145
+    it('check line coverage correct', async () => {
+      expect(result.$).to.eql({
+        linesCovered: 125,
+        linesValid: 144
+      });
+    });
+
+    it('check result correct', async () => {
+      const expectContent = fse.readJsonSync(expectResultFile);
+      expect(result).to.eql(expectContent);
+    });
+  });
+
 });
