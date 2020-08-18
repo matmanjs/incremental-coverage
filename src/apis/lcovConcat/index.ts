@@ -9,7 +9,7 @@ export * from './concat';
 
 /**
  * 输出合并之后的文件
- * @param path lcov文件路径
+ * @param lcovPath lcov文件路径
  */
 export async function lcovConcat(...lcovPath: string[]): Promise<Lcov> {
   // 去掉重复文件
