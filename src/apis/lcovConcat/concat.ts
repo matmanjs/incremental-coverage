@@ -27,7 +27,9 @@ export class LcovConcat {
     const res = { ...now };
 
     let linesCovered = 0;
+    let linesValid = 0;
 
+    // now 中有的项目进行合入
     for (const nowLine of res.lines) {
       for (const onceLine of once.lines) {
         if (+nowLine.number === +onceLine.number) {
@@ -35,13 +37,33 @@ export class LcovConcat {
           break;
         }
       }
+    }
 
-      if (nowLine.hits !== 0) {
-        linesCovered += 1;
+    // 只有 once 中有的项目合入
+    for (const onceLine of once.lines) {
+      let flag = false;
+      for (const nowLine of res.lines) {
+        if (+nowLine.number === +onceLine.number) {
+          flag = true;
+          break;
+        }
+      }
+
+      if (!flag) {
+        res.lines.push(onceLine);
       }
     }
 
+    // 计算覆盖的行数
+    for (const nowLine of res.lines) {
+      if (nowLine.hits !== 0) {
+        linesCovered += 1;
+      }
+      linesValid += 1;
+    }
+
     res.linesCovered = linesCovered;
+    res.linesValid = linesValid;
     res.lineRate = +(linesCovered / res.linesValid).toFixed(4);
 
     return res;
