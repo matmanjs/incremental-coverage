@@ -15,6 +15,7 @@ export interface BaseProcessOpts<T extends keyof Mapper> {
   since?: string;
   cwd?: string;
   output?: boolean;
+  hash?: string;
   stream: {
     name?: T;
     opts?: T extends 'stdio' ? StdoutStreamOpt : FileStreamOpt;
@@ -96,12 +97,17 @@ export class BaseProcess<T extends keyof Mapper> {
     this.opts.stream.name = opts.stream.name || 'file';
     this.opts.stream.opts = opts.stream.opts;
     this.opts.output = opts.output;
+    this.opts.hash = opts.hash;
   }
 
   async exec(): Promise<IncresseResult> {
     await this.getLcov();
 
-    await this.getLog();
+    if (this.opts.hash) {
+      this.getInfoByHash(this.opts.hash);
+    } else {
+      await this.getLog();
+    }
 
     await this.getDiff();
 
@@ -277,6 +283,26 @@ export class BaseProcess<T extends keyof Mapper> {
       abbrevHash: first[1],
       authorName: first[2],
       authorEmail: first[3],
+      authorDate: first[4],
+      subject: first[5],
+    };
+  }
+
+  /**
+   * 通过 hash 值得到本次提交的记录
+   */
+  private getInfoByHash(hash: string) {
+    const res = execSync(`git log ${hash} --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"`, {
+      cwd: this.opts.cwd,
+    })
+      .toString()
+      .split('\n');
+    const first = res[0].split('!!!');
+
+    this.firstGitMessage = {
+      hash: first[0],
+      abbrevHash: first[1],
+      authorName: first[2],
       authorDate: first[4],
       subject: first[5],
     };
