@@ -30,7 +30,7 @@ describe('./apis/lcovConcat/index.ts', () => {
     it('check line coverage correct 32/104', async () => {
       expect(result.$).to.eql({
         linesCovered: 32,
-        linesValid: 104
+        linesValid: 104,
       });
     });
 
@@ -59,7 +59,7 @@ describe('./apis/lcovConcat/index.ts', () => {
     it('check line coverage correct 121/144', async () => {
       expect(result.$).to.eql({
         linesCovered: 121,
-        linesValid: 144
+        linesValid: 144,
       });
     });
 
@@ -86,10 +86,10 @@ describe('./apis/lcovConcat/index.ts', () => {
       fse.removeSync(tmpResultFile);
     });
 
-    it.skip('check line coverage correct 126/145', async () => {
+    it('check line coverage correct 126/145', async () => {
       expect(result.$).to.eql({
         linesCovered: 126,
-        linesValid: 145
+        linesValid: 145,
       });
     });
 
@@ -98,5 +98,4 @@ describe('./apis/lcovConcat/index.ts', () => {
       expect(result).to.eql(expectContent);
     });
   });
-
 });
