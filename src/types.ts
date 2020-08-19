@@ -1,3 +1,5 @@
+import { IncreaseResult } from './apis/getIncrease';
+
 // 覆盖率测试报告格式化数据结构
 /**
  * Lcov 格式化时候的总数据
@@ -26,6 +28,7 @@ export interface DetailLines {
 export interface Lcov {
   detail: Record<string, DetailLines>;
   $?: Total;
+  increaseResultList?: IncreaseResult[]
 }
 
 /**

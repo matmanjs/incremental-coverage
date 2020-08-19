@@ -3,7 +3,7 @@ import path from 'path';
 import { Lcov } from '../../types';
 import { LcovConcat } from './concat';
 import { LcovParser } from '../../parsers';
-import { BaseProcess, Mapper, BaseProcessOpts } from '../getIncrease';
+import { BaseProcess, BaseProcessOpts, Mapper } from '../getIncrease';
 
 export * from './concat';
 
@@ -31,7 +31,8 @@ export async function lcovConcat(...lcovPath: string[]): Promise<Lcov> {
 
 /**
  * 输出合并之后的文件
- * @param path lcov文件路径
+ * @param opts
+ * @param lcovPath lcov文件路径
  */
 export async function increaseLcovConcat<T extends keyof Mapper>(
   opts: BaseProcessOpts<T>,
@@ -56,6 +57,7 @@ export async function increaseLcovConcat<T extends keyof Mapper>(
             linesValid: format.data.total.increLine,
           },
           detail: {},
+          increaseResultList: []
         };
 
         for (const formatItem of format.data.files) {
@@ -80,6 +82,8 @@ export async function increaseLcovConcat<T extends keyof Mapper>(
             lineRate: +(rate as string),
             lines: detail,
           };
+
+          temp.increaseResultList?.push(format);
         }
 
         return temp;

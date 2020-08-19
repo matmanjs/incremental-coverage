@@ -122,6 +122,7 @@ export class LcovConcat {
         linesValid,
       },
       detail: once,
+      increaseResultList: this.res.increaseResultList,
     };
 
     return this;

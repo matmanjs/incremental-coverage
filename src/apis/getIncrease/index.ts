@@ -72,7 +72,7 @@ export class BaseProcess<T extends keyof Mapper> {
     this.opts.hash = opts.hash;
   }
 
-  async exec(): Promise<IncresseResult> {
+  async exec(): Promise<IncreaseResult> {
     await this.getLcov();
 
     if (this.opts.hash) {
