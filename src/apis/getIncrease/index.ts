@@ -2,15 +2,22 @@ import os from 'os';
 import { execSync } from 'child_process';
 import dayjs from 'dayjs';
 import { File } from 'gitdiff-parser';
-import { LcovParser, LogParser, DiffParser } from '../../parsers';
+import { lcovConcat } from '../lcovConcat';
+import { LogParser, DiffParser } from '../../parsers';
 import { FileStreamOpt, StdoutStreamOpt, Stream, FileStream, StdoutStream } from '../../streams';
-import { Lcov } from '../../types';
+import { Lcov, CommitBase, FormatData, FirstInfo, IncresseResult } from '../../types';
 
+/**
+ * 两种不同类型的 Stream
+ */
 export interface Mapper {
   stdio: StdoutStreamOpt;
   file: FileStreamOpt;
 }
 
+/**
+ * BaseProcess 的配置参数
+ */
 export interface BaseProcessOpts<T extends keyof Mapper> {
   since?: string;
   cwd?: string;
@@ -22,47 +29,8 @@ export interface BaseProcessOpts<T extends keyof Mapper> {
   };
 }
 
-export interface FormatData {
-  total: {
-    increLine: number;
-    covLine: number;
-    increRate: string;
-  };
-  files: {
-    name: string;
-    increLine?: number;
-    covLine?: number;
-    increRate?: string;
-    detail?: { number: number; hits: number }[];
-  }[];
-}
-
-export interface CommitBase {
-  files?: string[];
-  abbrevHash?: string;
-  hash?: string;
-  subject?: string;
-  authorName?: string;
-  authorDate?: string;
-}
-
-interface FirstInfo {
-  hash?: string;
-  abbrevHash?: string;
-  subject?: string;
-  authorName?: string;
-  authorDate?: string;
-  authorEmail?: string;
-}
-
-export interface IncresseResult {
-  data: FormatData;
-  commit: CommitBase;
-  createInfo: FirstInfo;
-}
-
 export class BaseProcess<T extends keyof Mapper> {
-  lcovPath: string;
+  lcovPath: string[];
 
   opts: BaseProcessOpts<T> = {
     stream: {},
@@ -81,12 +49,16 @@ export class BaseProcess<T extends keyof Mapper> {
 
   private firstInfo: FirstInfo | undefined;
 
-  constructor(lcovPath: string, opts: BaseProcessOpts<T> = { stream: {} }) {
+  constructor(lcovPath: string | string[], opts: BaseProcessOpts<T> = { stream: {} }) {
     if (typeof lcovPath !== 'string') {
       throw new Error('请传递 lcov 文件路径');
     }
 
-    this.lcovPath = lcovPath;
+    if (typeof lcovPath === 'string') {
+      this.lcovPath = [lcovPath];
+    } else {
+      this.lcovPath = lcovPath;
+    }
 
     // 得到默认的开始日期
     const startDay = dayjs().startOf('month').format('YYYY-MM-DD');
@@ -130,7 +102,7 @@ export class BaseProcess<T extends keyof Mapper> {
    * 得到 lcov 结果
    */
   private async getLcov() {
-    this.lcov = await new LcovParser(this.lcovPath).run();
+    this.lcov = await lcovConcat(...this.lcovPath);
   }
 
   /**
