@@ -57,7 +57,6 @@ export async function increaseLcovConcat<T extends keyof Mapper>(
             linesValid: format.data.total.increLine,
           },
           detail: {},
-          increaseResultList: []
         };
 
         for (const formatItem of format.data.files) {
@@ -82,8 +81,6 @@ export async function increaseLcovConcat<T extends keyof Mapper>(
             lineRate: +(rate as string),
             lines: detail,
           };
-
-          temp.increaseResultList?.push(format);
         }
 
         return temp;

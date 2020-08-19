@@ -116,8 +116,6 @@ export class LcovConcat {
       linesValid += once[item].linesValid;
     });
 
-    const { increaseResultList } = this.res;
-
     this.res = {
       $: {
         linesCovered,
@@ -125,11 +123,6 @@ export class LcovConcat {
       },
       detail: once,
     };
-
-    // 只有在存在的时候再追加
-    if (increaseResultList) {
-      this.res.increaseResultList = increaseResultList;
-    }
 
     return this;
   }
