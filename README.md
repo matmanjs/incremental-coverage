@@ -38,23 +38,42 @@ $ incremental-coverage -p="./.dwt_output/e2e/coverage/lcov.info" -t="2020-06-01"
 
 ```json
 {
-  "total": { "increLine": 2, "covLine": 2, "increRate": "100.00%" },
-  "files": [
-    {
-      "increLine": 2,
-      "covLine": 2,
-      "increRate": "100.00%",
-      "detail": [
-        { "number": 5, "hits": 73 },
-        { "number": 71, "hits": 45 }
-      ],
-      "name": "/src/datas/action.js"
-    }
-  ]
+  "data": {
+    "total": { "increLine": 3, "covLine": 3, "increRate": "100.00%" },
+    "files": [
+      {
+        "increLine": 1,
+        "covLine": 1,
+        "increRate": "100.00%",
+        "detail": [{ "number": 2, "hits": 73 }],
+        "name": "./src/components/index.js"
+      }
+    ]
+  },
+  "commit": {
+    "status": ["M"],
+    "files": [".gitlab-ci.yml"],
+    "abbrevHash": "26e3b93",
+    "hash": "26e3b931cf165b73902e404d3adaaef973ac4609",
+    "subject": "refactor: 临时注释tde的调试代码",
+    "authorName": "linjianghe",
+    "authorDate": "2020-07-31 09:55:35 +0800"
+  },
+  "createInfo": {
+    "hash": "cc4f1e2f18a49cd8a30de0cb5087a709979c4631",
+    "abbrevHash": "cc4f1e2",
+    "authorName": "linjianghe",
+    "authorEmail": "linjianghe@tencent.com",
+    "authorDate": "Mon Apr 1 14:43:54 2019 +0800",
+    "subject": "feat: init"
+  }
 }
+
 ```
 
-`total` 为增量覆盖率的总情况，`files` 中是各个文件的详细情况。
+- `data` 中 `total` 为增量覆盖率的总情况，`files` 中是各个文件的详细情况
+- `commit` 为当前正在对比的那次提交的信息
+- `createInfo` 是 git 仓库的创建信息
 
 ## API
 
@@ -76,24 +95,18 @@ CLI 没有子命令只有最简单的三个选项：
 
 ##### params
 
-- `path`：lcov.info 文件的路径
+- `path`：`string` 或者 `string[]`，lcov.info 文件的路径
 - `opts`：配置选项
-  - `cwd`：String，git 命令运行的路径
-  - `since`：String，增量起始计算时间
-  - `output`：Boolean，是否需要输出
-  - `stream`：Object，针对输出流的配置
+  - `cwd`：`String`，git 命令运行的路径
+  - `since`：`String`，增量起始计算时间
+  - `output`：`Boolean`，是否需要输出
+  - `stream`：`Object`，针对输出流的配置
     - `name`：file 或者 stdio
     - `opts`：包含 `type` 输出格式，可选 `json`、`yaml`；`filePath`（name 为 file 时生效）指定输出文件路径；`ioType`（name 为 stdio 时生效），可选 stdout、stderr
 
 ##### return
 
 格式化后的数据，与上面的示例文件保持一致
-
-#### getIncreaseSync
-
-与 `getIncrease` 保持一致，不过为同步方法，不推荐使用
-
->Parser 统一实现 Parser 接口，仅仅暴露一个 run 方法
 
 #### lcovConcat
 
