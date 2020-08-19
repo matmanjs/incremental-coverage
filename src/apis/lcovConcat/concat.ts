@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import { Lcov, DetailLines } from '../../types';
+import { DetailLines, Lcov } from '../../types';
 
 export class LcovConcat {
   private res: Lcov | null = null;
@@ -116,14 +116,20 @@ export class LcovConcat {
       linesValid += once[item].linesValid;
     });
 
+    const { increaseResultList } = this.res;
+
     this.res = {
       $: {
         linesCovered,
         linesValid,
       },
       detail: once,
-      increaseResultList: this.res.increaseResultList,
     };
+
+    // 只有在存在的时候再追加
+    if (increaseResultList) {
+      this.res.increaseResultList = increaseResultList;
+    }
 
     return this;
   }

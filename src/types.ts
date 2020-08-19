@@ -1,5 +1,3 @@
-import { IncreaseResult } from './apis/getIncrease';
-
 // 覆盖率测试报告格式化数据结构
 /**
  * Lcov 格式化时候的总数据
@@ -76,7 +74,7 @@ export interface FirstInfo {
 /**
  * 最后返回的仓库增量信息
  */
-export interface IncresseResult {
+export interface IncreaseResult {
   data: FormatData;
   commit: CommitBase;
   createInfo: FirstInfo;

@@ -5,7 +5,7 @@ import { File } from 'gitdiff-parser';
 import { lcovConcat } from '../lcovConcat';
 import { LogParser, DiffParser } from '../../parsers';
 import { FileStreamOpt, StdoutStreamOpt, Stream, FileStream, StdoutStream } from '../../streams';
-import { Lcov, CommitBase, FormatData, FirstInfo, IncresseResult } from '../../types';
+import { Lcov, CommitBase, FormatData, FirstInfo, IncreaseResult } from '../../types';
 
 /**
  * 两种不同类型的 Stream

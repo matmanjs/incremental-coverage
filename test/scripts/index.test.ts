@@ -11,7 +11,6 @@ describe('./index.ts', () => {
       "LcovParser",
       "LogParser",
       "getIncrease",
-      "getIncreaseSync",
       "increaseLcovConcat",
       "lcovConcat",
     );
