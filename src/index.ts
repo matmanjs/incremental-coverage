@@ -1,3 +1,3 @@
 export * from './apis';
+export * from './types';
 export { DiffParser, LcovParser, LogParser } from './parsers';
-export { Lcov, DetailLines, Total } from './types';
