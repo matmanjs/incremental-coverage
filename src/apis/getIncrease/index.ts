@@ -3,9 +3,9 @@ import { execSync } from 'child_process';
 import dayjs from 'dayjs';
 import { File } from 'gitdiff-parser';
 import { lcovConcat } from '../lcovConcat';
-import { LogParser, DiffParser } from '../../parsers';
-import { FileStreamOpt, StdoutStreamOpt, Stream, FileStream, StdoutStream } from '../../streams';
-import { Lcov, CommitBase, FormatData, FirstInfo, IncreaseResult } from '../../types';
+import { DiffParser, LogParser } from '../../parsers';
+import { FileStream, FileStreamOpt, StdoutStream, StdoutStreamOpt, Stream } from '../../streams';
+import { CommitBase, FirstInfo, FormatData, IncreaseResult, Lcov } from '../../types';
 
 /**
  * 两种不同类型的 Stream
@@ -50,10 +50,6 @@ export class BaseProcess<T extends keyof Mapper> {
   private firstInfo: FirstInfo | undefined;
 
   constructor(lcovPath: string | string[], opts: BaseProcessOpts<T> = { stream: {} }) {
-    if (typeof lcovPath !== 'string') {
-      throw new Error('请传递 lcov 文件路径');
-    }
-
     if (typeof lcovPath === 'string') {
       this.lcovPath = [lcovPath];
     } else {
