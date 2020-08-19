@@ -19,7 +19,7 @@ describe('./apis/lcovConcat/index.ts', () => {
     let result: Lcov;
 
     before(async () => {
-      result = await lcovConcat(lcovInfoFilePath);
+      result = await lcovConcat([lcovInfoFilePath]);
       fse.outputJsonSync(tmpResultFile, result);
     });
 
@@ -48,7 +48,7 @@ describe('./apis/lcovConcat/index.ts', () => {
     let result: Lcov;
 
     before(async () => {
-      result = await lcovConcat(lcovInfoFilePath);
+      result = await lcovConcat([lcovInfoFilePath]);
       fse.outputJsonSync(tmpResultFile, result);
     });
 
@@ -78,7 +78,7 @@ describe('./apis/lcovConcat/index.ts', () => {
     let result: Lcov;
 
     before(async () => {
-      result = await lcovConcat(unitLcovInfoFilePath, e2eLcovInfoFilePath);
+      result = await lcovConcat([unitLcovInfoFilePath, e2eLcovInfoFilePath]);
       fse.outputJsonSync(tmpResultFile, result);
     });
 
