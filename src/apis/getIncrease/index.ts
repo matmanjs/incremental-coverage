@@ -310,4 +310,3 @@ export class BaseProcess<T extends keyof Mapper> {
 }
 
 export * from './async';
-export * from './sync';
