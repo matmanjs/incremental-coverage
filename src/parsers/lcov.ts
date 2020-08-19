@@ -48,7 +48,7 @@ export class LcovParser implements Parser {
    * 将文件格式化为需要的格式
    */
   private format(): Lcov {
-    const lcov: Lcov = { detail: {} };
+    const lcov: Lcov = { $: { linesCovered: 0, linesValid: 0 }, detail: {} };
     let found = 0;
     let hit = 0;
 

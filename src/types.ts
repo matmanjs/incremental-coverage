@@ -24,7 +24,7 @@ export interface DetailLines {
  */
 export interface Lcov {
   detail: Record<string, DetailLines>;
-  $?: Total;
+  $: Total;
 }
 
 /**
