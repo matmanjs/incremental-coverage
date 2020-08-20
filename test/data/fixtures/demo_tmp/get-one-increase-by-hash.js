@@ -2,6 +2,7 @@ const { e2eTestLcovFilePath, gitRootPath, incrementalCoverage } = require('./bas
 
 const { getIncrease } = incrementalCoverage;
 
+// 使用日期 since
 // 69: 24 / 31
 getIncrease(e2eTestLcovFilePath,
   {
@@ -12,12 +13,13 @@ getIncrease(e2eTestLcovFilePath,
   },
 )
   .then(data => {
-    console.log('---', data);
+    console.log('--使用日期 since--', data);
   })
   .catch(err => {
     console.error(err);
   });
 
+// 使用增量对比版本 hash
 // 69: 24 / 31
 getIncrease(e2eTestLcovFilePath,
   {
@@ -29,7 +31,7 @@ getIncrease(e2eTestLcovFilePath,
   },
 )
   .then(data => {
-    console.log('---', data);
+    console.log('--使用增量对比版本 hash--', data);
   })
   .catch(err => {
     console.error(err);

@@ -2,6 +2,7 @@ const { e2eTestLcovFilePath, unitTestLcovFilePath, gitRootPath, incrementalCover
 
 const { getIncrease } = incrementalCoverage;
 
+// 支持单文件
 // 69: 24 / 31
 getIncrease(e2eTestLcovFilePath,
   {
@@ -12,21 +13,38 @@ getIncrease(e2eTestLcovFilePath,
   },
 )
   .then(data => {
-    console.log('---', data);
+    console.log('-- 支持单文件 69: 24 / 31--', data);
+  })
+  .catch(err => {
+    console.error(err);
+  });
+
+// 支持多文件数组
+// 69: 24 / 31
+getIncrease([e2eTestLcovFilePath],
+  {
+    cwd: gitRootPath,
+    since: '2020-08-01',
+    output: false,
+    stream: {},
+  },
+)
+  .then(data => {
+    console.log('-- 支持多文件数组 69: 24 / 31--', data);
   })
   .catch(err => {
     console.error(err);
   });
 
 // 69: 25 / 31
-getIncrease(unitTestLcovFilePath, {
+getIncrease([unitTestLcovFilePath], {
   cwd: gitRootPath,
   since: '2020-08-01',
   output: false,
   stream: {},
 })
   .then(data => {
-    console.log('---', data);
+    console.log('--69: 25 / 31--', data);
   })
   .catch(err => {
     console.error(err);

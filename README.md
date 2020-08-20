@@ -19,12 +19,40 @@ Incremental Coverage 适用于 macOS、Windows 和 Linux。
 可以通过 [NPM](https://github.com/npm/cli) 或者 [Yarn](https://github.com/yarnpkg/yarn) 进行安装。
 
 ```sh
-$ npm install -g incremental-coverage
+$ npm install incremental-coverage
 # or
-$ yarn add global incremental-coverage
+$ yarn add incremental-coverage
 ```
 
 ### 使用
+
+#### 调用API
+
+```js
+const fs = require('fs');
+const { getIncrease, getFull } = require('incremental-coverage');
+
+(async () => {
+  await getIncrease(
+    './e2e/coverage/lcov.info',
+    {
+      output: true,
+      stream: {
+        name: 'file',
+      },
+    }
+  );
+
+  const res = await getFull([
+    './e2e/coverage/lcov.info',
+    './coverage/lcov.info',
+  ]);
+
+  fs.writeFileSync('./output1.json', JSON.stringify(res, null, 2));
+})();
+```
+
+#### 命令行调用
 
 我们通过一个简单的命令行工具来展示如何使用（必须在 Git 仓库根目录中运行，且指定 lcov 文件）。
 

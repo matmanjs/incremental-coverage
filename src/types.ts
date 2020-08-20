@@ -24,7 +24,7 @@ export interface DetailLines {
  */
 export interface Lcov {
   detail: Record<string, DetailLines>;
-  $?: Total;
+  $: Total;
 }
 
 /**
@@ -32,15 +32,15 @@ export interface Lcov {
  */
 export interface FormatData {
   total: {
-    increLine: number;
+    line: number;
     covLine: number;
-    increRate: string;
+    rate: string;
   };
   files: {
     name: string;
-    increLine?: number;
+    line?: number;
     covLine?: number;
-    increRate?: string;
+    rate?: string;
     detail?: { number: number; hits: number }[];
   }[];
 }
@@ -75,5 +75,13 @@ export interface FirstInfo {
 export interface IncreaseResult {
   data: FormatData;
   commit: CommitBase;
+  createInfo: FirstInfo;
+}
+
+/**
+ * 最后返回的仓库全量信息
+ */
+export interface FullResult {
+  data: FormatData;
   createInfo: FirstInfo;
 }

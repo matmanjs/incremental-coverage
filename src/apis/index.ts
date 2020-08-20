@@ -1,2 +1,3 @@
+export { getFull } from './getFull';
 export { getIncrease } from './getIncrease';
-export { LcovConcat, lcovConcat, increaseLcovConcat } from './lcovConcat';
+export { lcovConcat, increaseLcovConcat } from './lcovConcat';

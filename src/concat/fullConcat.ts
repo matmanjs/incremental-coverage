@@ -1,7 +1,8 @@
 /* eslint-disable no-restricted-syntax */
-import { DetailLines, Lcov } from '../../types';
+import { Concat } from './index';
+import { DetailLines, Lcov } from '../types';
 
-export class LcovConcat {
+export class LcovConcat implements Concat {
   private res: Lcov | null = null;
 
   /**
@@ -128,6 +129,6 @@ export class LcovConcat {
   }
 
   getRes(): Lcov {
-    return this.res ? this.res : { detail: {} };
+    return this.res ? this.res : { $: { linesCovered: 0, linesValid: 0 }, detail: {} };
   }
 }
