@@ -43,7 +43,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
   /**
    * 进行格式化进行结果输出
    */
-  protected format() {
+  protected format(): void {
     this.formatData.total.covLine = this.lcov.$.linesCovered;
     this.formatData.total.line = this.lcov.$.linesValid;
     this.formatData.total.rate = `${(
@@ -80,7 +80,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
   /**
    * 输出结果到对应的流
    */
-  protected output(data: unknown) {
+  protected output(data: unknown): void {
     let tempStream: Stream;
 
     if (this.opts.stream?.name === 'file') {
@@ -97,7 +97,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
   /**
    * 得到仓库第一次提交的信息
    */
-  protected createInfo() {
+  protected createInfo(): void {
     const res = execSync('git log --reverse --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"', {
       cwd: this.opts.cwd,
     })
