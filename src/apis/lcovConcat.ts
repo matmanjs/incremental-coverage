@@ -14,7 +14,7 @@ interface IncreaseLcovConcatOpts {
  * 输出合并之后的文件
  * @param lcovPath lcov文件路径
  */
-export async function lcovConcat(lcovPath: string[]): Promise<Lcov> {
+export async function lcovConcat(lcovPath: string | string[]): Promise<Lcov> {
   const res = await getLcovFile(lcovPath);
 
   return new LcovConcat().concat(...res).getRes();
@@ -26,7 +26,7 @@ export async function lcovConcat(lcovPath: string[]): Promise<Lcov> {
  * @param lcovPath lcov文件路径
  */
 export async function increaseLcovConcat(
-  lcovPath: string[],
+  lcovPath: string | string[],
   opts: IncreaseLcovConcatOpts,
 ): Promise<Lcov> {
   const res = await getLcovFile(lcovPath);
