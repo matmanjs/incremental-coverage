@@ -84,12 +84,12 @@ export class IncreaseConcat implements Concat {
     };
 
     Object.keys(this.res.detail).forEach((lcovItem) => {
+      const info = this.res.detail[lcovItem];
+      delete this.res.detail[lcovItem];
+
       this.diffData.forEach((diffItem) => {
         if (lcovItem.toLocaleLowerCase().includes(diffItem.newPath.toLocaleLowerCase())) {
           // 计算本文件的覆盖率
-          const info = this.res.detail[lcovItem];
-          delete this.res.detail[lcovItem];
-
           const temp: DetailLines = {
             lineRate: 0,
             linesCovered: 0,

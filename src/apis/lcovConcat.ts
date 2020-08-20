@@ -1,30 +1,13 @@
-/* eslint-disable no-restricted-syntax */
-import path from 'path';
 import dayjs from 'dayjs';
 import { Lcov } from '../types';
 import { LcovConcat, IncreaseConcat } from '../concat';
-import { LcovParser, LogParser } from '../parsers';
+import { LogParser } from '../parsers';
+import { getLcovFile } from '../utils/readLcov';
 
 interface IncreaseLcovConcatOpts {
   cwd?: string;
   hash?: string;
   since?: string;
-}
-
-async function getLcovFile(lcovPath: string[]) {
-  // 去掉重复文件
-  const lcovSet = new Set<string>();
-  for (const item of lcovPath) {
-    lcovSet.add(path.resolve(item));
-  }
-
-  // 并行格式化
-  const parserPromise: Promise<Lcov>[] = [];
-  for (const item of lcovSet) {
-    parserPromise.push(new LcovParser(item).run());
-  }
-
-  return Promise.all(parserPromise);
 }
 
 /**
