@@ -33,7 +33,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
     // 得到默认的开始日期
     const startDay = dayjs().startOf('month').format('YYYY-MM-DD');
-    this.opts.cwd = opts.cwd || process.cwd();
+    this.opts.cwd = opts.cwd;
     this.opts.since = opts.since || startDay;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -49,6 +49,10 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       this.getInfoByHash(this.opts.hash);
     } else {
       await this.getLog();
+    }
+
+    if (!this.opts.cwd) {
+      throw new Error('must pass a git dir');
     }
 
     // 得到创建信息

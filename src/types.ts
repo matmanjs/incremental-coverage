@@ -83,5 +83,5 @@ export interface IncreaseResult {
  */
 export interface FullResult {
   data: FormatData;
-  createInfo: FirstInfo;
+  createInfo?: FirstInfo;
 }
