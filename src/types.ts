@@ -60,7 +60,7 @@ export interface CommitBase {
 /**
  * 第一次仓库的提交信息
  */
-export interface FirstInfo {
+export interface FirstCommitInfo {
   hash?: string;
   abbrevHash?: string;
   subject?: string;
@@ -75,7 +75,7 @@ export interface FirstInfo {
 export interface IncreaseResult {
   data: FormatData;
   commit: CommitBase;
-  createInfo: FirstInfo;
+  createInfo: FirstCommitInfo;
 }
 
 /**
@@ -83,5 +83,5 @@ export interface IncreaseResult {
  */
 export interface FullResult {
   data: FormatData;
-  createInfo?: FirstInfo;
+  createInfo?: FirstCommitInfo;
 }

@@ -1,6 +1,6 @@
-import { execSync } from 'child_process';
 import { FileStream, FileStreamOpt, StdoutStream, StdoutStreamOpt, Stream } from '../../streams';
-import { FirstInfo, FormatData, FullResult, Lcov } from '../../types';
+import { FirstCommitInfo, FormatData, FullResult, Lcov } from '../../types';
+import { getGitRepoFirstCommitInfo, getGitRepoRootPath } from '../../utils/git';
 
 /**
  * 两种不同类型的 Stream
@@ -36,7 +36,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
     files: [],
   };
 
-  protected firstInfo: FirstInfo | undefined;
+  protected firstInfo: FirstCommitInfo | undefined;
 
   abstract async exec(): Promise<FullResult>;
 
@@ -97,22 +97,8 @@ export abstract class BaseProcess<T extends keyof Mapper> {
   /**
    * 得到仓库第一次提交的信息
    */
-  protected createInfo(): void {
-    const res = execSync('git log --reverse --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"', {
-      cwd: this.opts.cwd,
-    })
-      .toString()
-      .split('\n');
-    const first = res[0].split('!!!');
-
-    this.firstInfo = {
-      hash: first[0],
-      abbrevHash: first[1],
-      authorName: first[2],
-      authorEmail: first[3],
-      authorDate: first[4],
-      subject: first[5],
-    };
+  protected getCreateInfo(): FirstCommitInfo | undefined {
+    return getGitRepoFirstCommitInfo(this.opts.cwd);
   }
 }
 

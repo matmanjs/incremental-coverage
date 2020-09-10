@@ -5,7 +5,8 @@ import { BaseProcess, BaseProcessOpts, Mapper } from './index';
 import { IncreaseConcat } from '../../concat';
 import { LogParser } from '../../parsers';
 import { getLcovFile } from '../../utils/readLcov';
-import { CommitBase, FirstInfo, IncreaseResult } from '../../types';
+import { CommitBase, FirstCommitInfo, IncreaseResult } from '../../types';
+import { getActualGitRepoRoot } from "../../utils";
 
 /**
  * BaseProcess 的配置参数
@@ -33,7 +34,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
     // 得到默认的开始日期
     const startDay = dayjs().startOf('month').format('YYYY-MM-DD');
-    this.opts.cwd = opts.cwd;
+    this.opts.cwd = getActualGitRepoRoot(opts.cwd);
     this.opts.since = opts.since || startDay;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -41,17 +42,6 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     this.opts.stream.opts = opts.stream.opts;
     this.opts.output = opts.output;
     this.opts.hash = opts.hash;
-
-    // 有可能用户没有传递 opts.cwd 参数进来，需要设置一些默认值
-    if (!this.opts.cwd) {
-      // 尝试去获取当前 git 项目的根目录
-      const gitRepoRootPath = this.getGitRepoRootPath();
-      if (gitRepoRootPath) {
-        this.opts.cwd = gitRepoRootPath;
-      } else {
-        this.opts.cwd = process.cwd();
-      }
-    }
   }
 
   async exec(): Promise<IncreaseResult> {
@@ -67,7 +57,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     }
 
     // 得到创建信息
-    this.createInfo();
+    this.firstInfo = this.getCreateInfo();
 
     // 得到增量合并结果
     await this.getLcov();
@@ -78,14 +68,14 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       this.output({
         data: this.formatData,
         commit: this.firstGitMessage,
-        createInfo: this.firstInfo as FirstInfo,
+        createInfo: this.firstInfo as FirstCommitInfo,
       });
     }
 
     return {
       data: this.formatData,
       commit: this.firstGitMessage,
-      createInfo: this.firstInfo as FirstInfo,
+      createInfo: this.firstInfo as FirstCommitInfo,
     };
   }
 
@@ -135,25 +125,5 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       authorDate: first[4],
       subject: first[5],
     };
-  }
-
-  /**
-   * 获取当前git项目的根目录
-   */
-  private getGitRepoRootPath() {
-    try {
-      const res = execSync(`git rev-parse --show-toplevel`, {
-        cwd: this.opts.cwd,
-      })
-        .toString()
-        .split('\n');
-
-      return res[0];
-    } catch (e) {
-      // 如果该执行模块没有在 git 项目内，则会抛出一个异常
-      // Error: Command failed: git rev-parse --show-toplevel
-      // fatal: not a git repository (or any of the parent directories): .git
-      return null;
-    }
   }
 }

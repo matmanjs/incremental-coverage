@@ -3,7 +3,8 @@ import { File } from 'gitdiff-parser';
 import { Concat } from './index';
 import { LcovConcat } from './fullConcat';
 import { DiffParser } from '../parsers';
-import { Lcov, DetailLines } from '../types';
+import { DetailLines, Lcov } from '../types';
+import { getActualGitRepoRoot } from "../utils";
 
 /**
  * 配置参数
@@ -30,7 +31,7 @@ export class IncreaseConcat implements Concat {
   private diffData: File[] = [];
 
   constructor(opts: IncreaseConcatOpts = {}) {
-    this.opts.cwd = opts.cwd || process.cwd();
+    this.opts.cwd = getActualGitRepoRoot(opts.cwd);
     this.opts.hash = opts.hash;
   }
 

@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 import { Lcov } from '../types';
-import { LcovConcat, IncreaseConcat } from '../concat';
+import { IncreaseConcat, LcovConcat } from '../concat';
 import { LogParser } from '../parsers';
 import { getLcovFile } from '../utils/readLcov';
+import { getActualGitRepoRoot } from '../utils';
 
 interface IncreaseLcovConcatOpts {
   cwd?: string;
@@ -31,6 +32,9 @@ export async function increaseLcovConcat(
 ): Promise<Lcov> {
   const res = await getLcovFile(lcovPath);
 
+  // 自动算出当前仓库的根目录
+  const cwd = getActualGitRepoRoot(opts.cwd);
+
   // 传递了日期使用日期
   let { hash } = opts;
 
@@ -41,7 +45,7 @@ export async function increaseLcovConcat(
       .format('YYYY-MM-DD');
 
     const logRes = await new LogParser({
-      repo: opts.cwd as string,
+      repo: cwd,
       until: subDate,
     }).run();
 
@@ -51,7 +55,7 @@ export async function increaseLcovConcat(
 
   return (
     await new IncreaseConcat({
-      cwd: opts.cwd,
+      cwd,
       hash,
     }).concat(...res)
   ).getRes();
