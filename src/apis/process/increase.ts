@@ -62,6 +62,10 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       await this.getLog();
     }
 
+    if (!this.opts.cwd) {
+      throw new Error('must pass a git dir');
+    }
+
     // 得到创建信息
     this.createInfo();
 

@@ -13,7 +13,7 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
       this.lcovPath = lcovPath;
     }
 
-    this.opts.cwd = opts.cwd || process.cwd();
+    this.opts.cwd = opts.cwd;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.opts.stream.name = opts.stream.name || 'file';
@@ -23,7 +23,9 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
   async exec(): Promise<FullResult> {
     // 得到创建信息
-    this.createInfo();
+    if (this.opts.cwd) {
+      this.createInfo();
+    }
 
     // 得到全量合并结果
     await this.getLcov();
@@ -39,7 +41,7 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
     return {
       data: this.formatData,
-      createInfo: this.firstInfo as FirstInfo,
+      createInfo: this.opts.cwd ? (this.firstInfo as FirstInfo) : undefined,
     };
   }
 
