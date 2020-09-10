@@ -1,7 +1,7 @@
 {
   "name": "incremental-coverage",
-  "version": "2.4.0",
-  "description": "",
+  "version": "2.4.1",
+  "description": "Merge lcov.info and get incremental coverage and full coverage",
   "main": "lib/index.js",
   "bin": {
     "incremental-coverage": "lib/cli.js"
@@ -21,8 +21,11 @@
     "README.md",
     "LICENSE"
   ],
-  "keywords": [],
-  "author": "wangjq4214",
+  "keywords": [
+    "coverage",
+    "incremental-coverage"
+  ],
+  "author": "helinjiang",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",
