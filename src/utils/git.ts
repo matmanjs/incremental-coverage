@@ -2,6 +2,53 @@ import { execSync } from "child_process";
 import { FirstCommitInfo } from "../types";
 
 /**
+ * 获取当前git项目的分支名
+ */
+export function getGitRepoRemoteUrl(cwd?: string): string {
+  try {
+    const res = execSync(`git remote -v`, {
+      cwd: cwd || process.cwd(),
+    })
+      .toString()
+      .split('\n');
+
+    /*
+    origin  https://github.com/matmanjs/incremental-coverage.git (fetch)
+    origin  https://github.com/matmanjs/incremental-coverage.git (push)
+    */
+
+    const matchResult = res[0].trim().match(/[^\s]*\s+(.*)\s+\(.*/i);
+
+    return matchResult && matchResult[1] || '';
+  } catch (e) {
+    // 如果该执行模块没有在 git 项目内，则会抛出一个异常
+    // Error: Command failed: git rev-parse --show-toplevel
+    // fatal: not a git repository (or any of the parent directories): .git
+    return '';
+  }
+}
+
+/**
+ * 获取当前git项目的分支名
+ */
+export function getGitRepoCurrentBranch(cwd?: string): string {
+  try {
+    const res = execSync(`git symbolic-ref --short -q HEAD`, {
+      cwd: cwd || process.cwd(),
+    })
+      .toString()
+      .split('\n');
+
+    return res[0];
+  } catch (e) {
+    // 如果该执行模块没有在 git 项目内，则会抛出一个异常
+    // Error: Command failed: git rev-parse --show-toplevel
+    // fatal: not a git repository (or any of the parent directories): .git
+    return '';
+  }
+}
+
+/**
  * 获取当前git项目的根目录
  */
 export function getGitRepoRootPath(cwd?: string): string {

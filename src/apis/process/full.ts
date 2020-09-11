@@ -33,19 +33,20 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
     this.format();
 
-    // 处理下首次提交的代码信息
-    const firstInfo = this.firstInfo ? (this.firstInfo as FirstCommitInfo) : undefined;
+    // 将首次提交的代码信息当做创建信息
+    const createInfo = this.firstInfo ? (this.firstInfo as FirstCommitInfo) : undefined;
 
     if (this.opts.output) {
       this.output({
         data: this.formatData,
-        createInfo: firstInfo,
+        createInfo,
       });
     }
 
     return {
       data: this.formatData,
-      createInfo: firstInfo,
+      createInfo,
+      gitRepoInfo: this.getGitRepoInfo()
     };
   }
 

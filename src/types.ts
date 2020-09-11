@@ -70,12 +70,21 @@ export interface FirstCommitInfo {
 }
 
 /**
+ * 当前仓库的基本信息
+ */
+export interface GitRepoInfo {
+  remoteUrl: string;
+  branch: string;
+}
+
+/**
  * 最后返回的仓库增量信息
  */
 export interface IncreaseResult {
   data: FormatData;
   commit: CommitBase;
   createInfo: FirstCommitInfo;
+  gitRepoInfo: GitRepoInfo;
 }
 
 /**
@@ -84,4 +93,5 @@ export interface IncreaseResult {
 export interface FullResult {
   data: FormatData;
   createInfo?: FirstCommitInfo;
+  gitRepoInfo: GitRepoInfo;
 }

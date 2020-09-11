@@ -1,6 +1,6 @@
 import { FileStream, FileStreamOpt, StdoutStream, StdoutStreamOpt, Stream } from '../../streams';
-import { FirstCommitInfo, FormatData, FullResult, Lcov } from '../../types';
-import { getGitRepoFirstCommitInfo, getGitRepoRootPath } from '../../utils/git';
+import { FirstCommitInfo, FormatData, FullResult, GitRepoInfo, Lcov } from '../../types';
+import { getGitRepoCurrentBranch, getGitRepoFirstCommitInfo, getGitRepoRemoteUrl } from '../../utils/git';
 
 /**
  * 两种不同类型的 Stream
@@ -99,6 +99,18 @@ export abstract class BaseProcess<T extends keyof Mapper> {
    */
   protected getCreateInfo(): FirstCommitInfo | undefined {
     return getGitRepoFirstCommitInfo(this.opts.cwd);
+  }
+
+  /**
+   * 得到当前仓库的信息
+   */
+  protected getGitRepoInfo(): GitRepoInfo {
+    const remoteUrl = getGitRepoRemoteUrl(this.opts.cwd);
+    const branch = getGitRepoCurrentBranch(this.opts.cwd);
+    return {
+      remoteUrl,
+      branch
+    };
   }
 }
 

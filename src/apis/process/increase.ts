@@ -57,7 +57,10 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     }
 
     // 得到创建信息
-    this.firstInfo = this.getCreateInfo();
+    this.firstInfo = this.getCreateInfo() as FirstCommitInfo;
+
+    // 将首次提交的代码信息当做创建信息
+    const createInfo = this.firstInfo as FirstCommitInfo;
 
     // 得到增量合并结果
     await this.getLcov();
@@ -68,14 +71,15 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       this.output({
         data: this.formatData,
         commit: this.firstGitMessage,
-        createInfo: this.firstInfo as FirstCommitInfo,
+        createInfo,
       });
     }
 
     return {
       data: this.formatData,
       commit: this.firstGitMessage,
-      createInfo: this.firstInfo as FirstCommitInfo,
+      createInfo,
+      gitRepoInfo: this.getGitRepoInfo()
     };
   }
 
