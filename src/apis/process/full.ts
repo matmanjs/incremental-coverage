@@ -28,7 +28,7 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
     // 得到创建信息
     if (this.opts.cwd) {
-      createInfo = this.getCreateInfo();
+      createInfo = await this.getCreateInfo();
 
       if (createInfo) {
         this.firstInfo = createInfo as CommitInfo;

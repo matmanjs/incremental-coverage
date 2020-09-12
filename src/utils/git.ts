@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { CommitInfo } from "../types";
 
 /**
@@ -71,13 +71,14 @@ export function getGitRepoRootPath(cwd?: string): string {
 /**
  * 得到仓库第一次提交的信息
  */
-export function getGitRepoFirstCommitInfo(cwd?: string): CommitInfo | null {
+export async function getGitRepoFirstCommitInfo(cwd?: string): Promise<CommitInfo | null> {
   try {
-    const res = execSync('git log --reverse --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"', {
+    const runResult = await runBySpawn('git log --reverse --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"', [], {
       cwd: cwd || process.cwd(),
-    })
-      .toString()
-      .split('\n');
+    });
+
+    const res = runResult.toString().split('\n');
+
     const first = res[0].split('!!!');
 
     return {
@@ -97,13 +98,14 @@ export function getGitRepoFirstCommitInfo(cwd?: string): CommitInfo | null {
 /**
  * 通过 hash 值得到本次提交的记录
  */
-export function getGitRepoCommitInfoByHash(hash: string, cwd?: string): CommitInfo | null {
+export async function getGitRepoCommitInfoByHash(hash: string, cwd?: string): Promise<CommitInfo | null> {
   try {
-    const res = execSync(`git log ${hash} --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"`, {
+    const runResult = await runBySpawn(`git log ${hash} --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"`, [], {
       cwd: cwd || process.cwd(),
-    })
-      .toString()
-      .split('\n');
+    });
+
+    const res = runResult.toString().split('\n');
+
     const first = res[0].split('!!!');
 
     return {
@@ -114,8 +116,55 @@ export function getGitRepoCommitInfoByHash(hash: string, cwd?: string): CommitIn
       authorDate: first[4],
       subject: first[5],
     };
+
   } catch (e) {
     // 可能当前并不是 git 项目
     return null;
   }
+}
+
+/**
+ * 使用 spawn 来执行指定的命令
+ * @param {String} command
+ * @param {Object} args
+ * @param {Object} [options]
+ * @return {Promise}
+ */
+export function runBySpawn(
+  command: string,
+  args?: string[],
+  options?: SpawnOptionsWithoutStdio,
+): Promise<string> {
+  return new Promise((resolve) => {
+    // https://nodejs.org/dist/latest-v10.x/docs/api/child_process.html#child_process_child_process_spawn_command_args_options
+    const cmd = spawn(command, args, {
+      ...options,
+      // windows 中如果不设置它的话会出错
+      shell: true,
+    });
+
+    let result = '';
+
+    // 增加一个超时限制
+    const checkT = setTimeout(() => {
+      resolve(result);
+    }, 5000);
+
+    cmd.stdout.on('data', (data) => {
+      result += data;
+    });
+
+    cmd.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
+    cmd.on('close', (code) => {
+      if (code) {
+        console.error(`${command} close: ${code}`);
+      }
+
+      clearTimeout(checkT);
+      resolve(result);
+    });
+  });
 }

@@ -97,7 +97,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
   /**
    * 得到仓库第一次提交的信息
    */
-  protected getCreateInfo(): CommitInfo | null {
+  protected async getCreateInfo(): Promise<CommitInfo | null> {
     return getGitRepoFirstCommitInfo(this.opts.cwd);
   }
 

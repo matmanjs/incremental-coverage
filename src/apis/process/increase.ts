@@ -47,7 +47,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
   async exec(): Promise<IncreaseResult> {
     // 得到本次 diff 信息
     if (this.opts.hash) {
-      this.getInfoByHash(this.opts.hash);
+      await this.getInfoByHash(this.opts.hash);
     } else {
       await this.getLog();
     }
@@ -57,7 +57,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     }
 
     // 将首次提交的代码信息当做创建信息
-    const createInfo = this.getCreateInfo() as CommitInfo;
+    const createInfo = await this.getCreateInfo() as CommitInfo;
 
     // 得到创建信息
     this.firstInfo = createInfo;
@@ -114,8 +114,8 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
   /**
    * 通过 hash 值得到本次提交的记录
    */
-  private getInfoByHash(hash: string) {
-    const result = getGitRepoCommitInfoByHash(hash, this.opts.cwd);
+  private async getInfoByHash(hash: string) {
+    const result = await getGitRepoCommitInfoByHash(hash, this.opts.cwd);
 
     if (result) {
       this.firstGitMessage = result;
