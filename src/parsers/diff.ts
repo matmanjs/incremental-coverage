@@ -46,11 +46,41 @@ export class DiffParser implements Parser {
 
     // 执行 diff
     this.stdout = await new Promise((resolve, reject) => {
-      child.exec(`git diff ${this.hash}`, this.opt, (err, stdout) => {
-        if (err) {
-          reject(err);
+      const command = `git diff ${this.hash}`;
+
+      // 注意不能用 exec, 原因详见 https://github.com/matmanjs/incremental-coverage/issues/8
+      const cmd = child.spawn(command, [], {
+        ...(this.opt || {}),
+        // windows 中如果不设置它的话会出错
+        shell: true,
+      },);
+
+      let result = '';
+      let errMsg = '';
+
+      // 增加一个超时限制
+      const checkT = setTimeout(() => {
+        resolve(result);
+      }, 5000);
+
+      cmd.stdout.on('data', (data) => {
+        result += data;
+      });
+
+      cmd.stderr.on('data', (data) => {
+        // console.error(`stderr: ${data}`);
+        errMsg += data;
+      });
+
+      cmd.on('close', (code) => {
+        clearTimeout(checkT);
+
+        if (code) {
+          // console.error(`${command} close: ${code}`);
+          reject(new Error(`(close=${code})${errMsg}`));
+        } else {
+          resolve(result);
         }
-        resolve(stdout);
       });
     });
   }
