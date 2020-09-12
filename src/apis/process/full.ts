@@ -1,7 +1,7 @@
 import { BaseProcess, BaseProcessOpts, Mapper } from './index';
 import { LcovConcat } from '../../concat';
 import { getLcovFile } from '../../utils/readLcov';
-import { FirstCommitInfo, FullResult } from '../../types';
+import { CommitInfo, FullResult } from '../../types';
 import { getActualGitRepoRoot } from "../../utils";
 
 export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
@@ -23,18 +23,22 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
   }
 
   async exec(): Promise<FullResult> {
+    // 将首次提交的代码信息当做创建信息
+    let createInfo;
+
     // 得到创建信息
     if (this.opts.cwd) {
-      this.firstInfo = this.getCreateInfo();
+      createInfo = this.getCreateInfo();
+
+      if (createInfo) {
+        this.firstInfo = createInfo as CommitInfo;
+      }
     }
 
     // 得到全量合并结果
     await this.getLcov();
 
     this.format();
-
-    // 将首次提交的代码信息当做创建信息
-    const createInfo = this.firstInfo ? (this.firstInfo as FirstCommitInfo) : undefined;
 
     if (this.opts.output) {
       this.output({
@@ -45,7 +49,7 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
 
     return {
       data: this.formatData,
-      createInfo,
+      createInfo: createInfo ? (createInfo as CommitInfo) : undefined,
       gitRepoInfo: this.getGitRepoInfo()
     };
   }

@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { FirstCommitInfo } from "../types";
+import { CommitInfo } from "../types";
 
 /**
  * 获取当前git项目的分支名
@@ -71,7 +71,7 @@ export function getGitRepoRootPath(cwd?: string): string {
 /**
  * 得到仓库第一次提交的信息
  */
-export function getGitRepoFirstCommitInfo(cwd?: string): FirstCommitInfo | undefined {
+export function getGitRepoFirstCommitInfo(cwd?: string): CommitInfo | null {
   try {
     const res = execSync('git log --reverse --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"', {
       cwd: cwd || process.cwd(),
@@ -90,6 +90,32 @@ export function getGitRepoFirstCommitInfo(cwd?: string): FirstCommitInfo | undef
     };
   } catch (e) {
     // 可能当前并不是 git 项目
-    return undefined;
+    return null;
+  }
+}
+
+/**
+ * 通过 hash 值得到本次提交的记录
+ */
+export function getGitRepoCommitInfoByHash(hash: string, cwd?: string): CommitInfo | null {
+  try {
+    const res = execSync(`git log ${hash} --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"`, {
+      cwd: cwd || process.cwd(),
+    })
+      .toString()
+      .split('\n');
+    const first = res[0].split('!!!');
+
+    return {
+      hash: first[0],
+      abbrevHash: first[1],
+      authorName: first[2],
+      authorEmail: first[3],
+      authorDate: first[4],
+      subject: first[5],
+    };
+  } catch (e) {
+    // 可能当前并不是 git 项目
+    return null;
   }
 }

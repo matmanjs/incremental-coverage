@@ -1,5 +1,5 @@
 import { FileStream, FileStreamOpt, StdoutStream, StdoutStreamOpt, Stream } from '../../streams';
-import { FirstCommitInfo, FormatData, FullResult, GitRepoInfo, Lcov } from '../../types';
+import { CommitInfo, FormatData, FullResult, GitRepoInfo, Lcov } from '../../types';
 import { getGitRepoCurrentBranch, getGitRepoFirstCommitInfo, getGitRepoRemoteUrl } from '../../utils/git';
 
 /**
@@ -36,7 +36,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
     files: [],
   };
 
-  protected firstInfo: FirstCommitInfo | undefined;
+  protected firstInfo: CommitInfo | undefined;
 
   abstract async exec(): Promise<FullResult>;
 
@@ -97,7 +97,7 @@ export abstract class BaseProcess<T extends keyof Mapper> {
   /**
    * 得到仓库第一次提交的信息
    */
-  protected getCreateInfo(): FirstCommitInfo | undefined {
+  protected getCreateInfo(): CommitInfo | null {
     return getGitRepoFirstCommitInfo(this.opts.cwd);
   }
 

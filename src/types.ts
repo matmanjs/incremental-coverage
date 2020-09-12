@@ -46,21 +46,17 @@ export interface FormatData {
 }
 
 /**
- * 进行 Diff 的那次提交的信息
- */
-export interface CommitBase {
-  files?: string[];
-  abbrevHash?: string;
-  hash?: string;
-  subject?: string;
-  authorName?: string;
-  authorDate?: string;
+ * 代码提交信息
+ * {
+  hash: '8996d46d817ee6d666ce286009a45fcd1ae06a36',
+  abbrevHash: '8996d46',
+  authorName: 'abc',
+  authorEmail: 'abc@qq.com',
+  authorDate: 'Fri Aug 7 10:22:15 2020 +0800',
+  subject: 'feat: 初始化项目'
 }
-
-/**
- * 第一次仓库的提交信息
  */
-export interface FirstCommitInfo {
+export interface CommitInfo {
   hash?: string;
   abbrevHash?: string;
   subject?: string;
@@ -82,8 +78,8 @@ export interface GitRepoInfo {
  */
 export interface IncreaseResult {
   data: FormatData;
-  commit: CommitBase;
-  createInfo: FirstCommitInfo;
+  commit: CommitInfo;
+  createInfo: CommitInfo;
   gitRepoInfo: GitRepoInfo;
 }
 
@@ -92,6 +88,6 @@ export interface IncreaseResult {
  */
 export interface FullResult {
   data: FormatData;
-  createInfo?: FirstCommitInfo;
+  createInfo?: CommitInfo;
   gitRepoInfo: GitRepoInfo;
 }

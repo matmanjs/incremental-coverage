@@ -1,12 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 import dayjs from 'dayjs';
-import { execSync } from 'child_process';
 import { BaseProcess, BaseProcessOpts, Mapper } from './index';
 import { IncreaseConcat } from '../../concat';
 import { LogParser } from '../../parsers';
 import { getLcovFile } from '../../utils/readLcov';
-import { CommitBase, FirstCommitInfo, IncreaseResult } from '../../types';
+import { CommitInfo, IncreaseResult } from '../../types';
 import { getActualGitRepoRoot } from "../../utils";
+import { getGitRepoCommitInfoByHash } from "../../utils/git";
 
 /**
  * BaseProcess 的配置参数
@@ -21,7 +21,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     stream: {},
   };
 
-  private firstGitMessage: CommitBase = {};
+  private firstGitMessage: CommitInfo = {};
 
   constructor(lcovPath: string | string[], opts: IncreaseProcessOpts<T> = { stream: {} }) {
     super();
@@ -56,11 +56,11 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       throw new Error('must pass a git dir');
     }
 
-    // 得到创建信息
-    this.firstInfo = this.getCreateInfo() as FirstCommitInfo;
-
     // 将首次提交的代码信息当做创建信息
-    const createInfo = this.firstInfo as FirstCommitInfo;
+    const createInfo = this.getCreateInfo() as CommitInfo;
+
+    // 得到创建信息
+    this.firstInfo = createInfo;
 
     // 得到增量合并结果
     await this.getLcov();
@@ -115,19 +115,10 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
    * 通过 hash 值得到本次提交的记录
    */
   private getInfoByHash(hash: string) {
-    const res = execSync(`git log ${hash} --pretty="%H!!!%h!!!%aN!!!%aE!!!%ad!!!%B"`, {
-      cwd: this.opts.cwd,
-    })
-      .toString()
-      .split('\n');
-    const first = res[0].split('!!!');
+    const result = getGitRepoCommitInfoByHash(hash, this.opts.cwd);
 
-    this.firstGitMessage = {
-      hash: first[0],
-      abbrevHash: first[1],
-      authorName: first[2],
-      authorDate: first[4],
-      subject: first[5],
-    };
+    if (result) {
+      this.firstGitMessage = result;
+    }
   }
 }
