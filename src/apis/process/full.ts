@@ -5,6 +5,8 @@ import { CommitInfo, FullResult } from '../../types';
 import { getActualGitRepoRoot } from "../../utils";
 
 export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
+  private firstGitMessage: CommitInfo = {};
+
   constructor(lcovPath: string | string[], opts: BaseProcessOpts<T> = { stream: {} }) {
     super();
 
@@ -31,7 +33,7 @@ export class FullProcess<T extends keyof Mapper> extends BaseProcess<T> {
       createInfo = await this.getCreateInfo();
 
       if (createInfo) {
-        this.firstInfo = createInfo as CommitInfo;
+        this.firstGitMessage = createInfo as CommitInfo;
       }
     }
 

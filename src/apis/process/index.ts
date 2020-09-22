@@ -36,8 +36,6 @@ export abstract class BaseProcess<T extends keyof Mapper> {
     files: [],
   };
 
-  protected firstInfo: CommitInfo | undefined;
-
   abstract async exec(): Promise<FullResult>;
 
   /**
