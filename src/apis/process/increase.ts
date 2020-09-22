@@ -60,7 +60,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     const createInfo = await this.getCreateInfo() as CommitInfo;
 
     // 得到创建信息
-    this.firstInfo = createInfo;
+    this.firstGitMessage = createInfo;
 
     // 得到增量合并结果
     await this.getLcov();
@@ -87,12 +87,13 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
    * 得到 lcov 结果
    */
   private async getLcov() {
+    // 解析获得 lcov.info 的信息，这里是全量覆盖率信息
     const res = await getLcovFile(this.lcovPath);
 
     this.lcov = (
       await new IncreaseConcat({
         cwd: this.opts.cwd,
-        hash: this.firstGitMessage.hash,
+        hash: this.firstGitMessage?.hash,
       }).concat(...res)
     ).getRes();
   }
