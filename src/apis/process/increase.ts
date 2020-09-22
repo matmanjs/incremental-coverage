@@ -87,6 +87,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
    * 得到 lcov 结果
    */
   private async getLcov() {
+    // 解析获得 lcov.info 的信息，这里是全量覆盖率信息
     const res = await getLcovFile(this.lcovPath);
 
     this.lcov = (

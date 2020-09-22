@@ -85,6 +85,7 @@ export class IncreaseConcat implements Concat {
     };
 
     Object.keys(this.res.detail).forEach((lcovItem) => {
+      // 单个文件A的覆盖率数据，无法阅读的数据
       const info = this.res.detail[lcovItem];
       delete this.res.detail[lcovItem];
 
@@ -113,7 +114,9 @@ export class IncreaseConcat implements Concat {
 
           // 统计lcov中有记录的行
           const lcovLineArr: Array<number> = [];
+
           const details = info.lines;
+
           details.forEach((detail) => {
             const { hits } = detail;
             const { number } = detail;
