@@ -30,8 +30,9 @@ export class LogParser implements Parser {
       throw new Error('请选择 git 仓库运行');
     }
 
-    // 执行 log
-    const log = await gitlogPromise({ ...this.opt, number: 10000 });
+    // 执行 log，限制条数，否则会由于输出太多内容导致 ERR_CHILD_PROCESS_STDIO_MAXBUFFER 问题
+    // https://www.npmjs.com/package/gitlog
+    const log = await gitlogPromise({ ...this.opt, number: 10 });
 
     return log;
   }

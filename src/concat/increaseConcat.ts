@@ -90,7 +90,8 @@ export class IncreaseConcat implements Concat {
       delete this.res.detail[lcovItem];
 
       this.diffData.forEach((diffItem) => {
-        if (lcovItem.toLocaleLowerCase().includes(diffItem.newPath.toLocaleLowerCase())) {
+        // 注意 diffItem.newPath 有可能不存在，例如被删除的文件就木有
+        if (lcovItem.toLocaleLowerCase().includes(diffItem.newPath?.toLocaleLowerCase())) {
           // 计算本文件的覆盖率
           const temp: DetailLines = {
             lineRate: 0,
