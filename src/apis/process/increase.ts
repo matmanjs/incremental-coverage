@@ -21,7 +21,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     stream: {},
   };
 
-  private firstGitMessage: CommitInfo = {};
+  private baseDiffCommitInfo: CommitInfo | undefined;
 
   constructor(lcovPath: string | string[], opts: IncreaseProcessOpts<T> = { stream: {} }) {
     super();
@@ -45,11 +45,14 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
   }
 
   async exec(): Promise<IncreaseResult> {
-    // 得到本次 diff 信息
+    // 如果传递了 hash，则得到该提交记录
     if (this.opts.hash) {
-      await this.getInfoByHash(this.opts.hash);
-    } else {
-      await this.getLog();
+      this.baseDiffCommitInfo = await this.getCommitInfoByHash(this.opts.hash);
+    }
+
+    // 如果通过 hash 无法获得，则自动获取指定日期的那次代码提交
+    if (!this.baseDiffCommitInfo) {
+      this.baseDiffCommitInfo = await this.getCommitInfoByLogSince();
     }
 
     if (!this.opts.cwd) {
@@ -59,9 +62,6 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     // 将首次提交的代码信息当做创建信息
     const createInfo = await this.getCreateInfo() as CommitInfo;
 
-    // 得到创建信息
-    this.firstGitMessage = createInfo;
-
     // 得到增量合并结果
     await this.getLcov();
 
@@ -70,14 +70,14 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     if (this.opts.output) {
       this.output({
         data: this.formatData,
-        commit: this.firstGitMessage,
+        commit: this.baseDiffCommitInfo,
         createInfo,
       });
     }
 
     return {
       data: this.formatData,
-      commit: this.firstGitMessage,
+      commit: this.baseDiffCommitInfo as CommitInfo,
       createInfo,
       gitRepoInfo: this.getGitRepoInfo()
     };
@@ -90,36 +90,40 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     // 解析获得 lcov.info 的信息，这里是全量覆盖率信息
     const res = await getLcovFile(this.lcovPath);
 
-    this.lcov = (
-      await new IncreaseConcat({
-        cwd: this.opts.cwd,
-        hash: this.firstGitMessage?.hash,
-      }).concat(...res)
-    ).getRes();
+    // 合并多个 lcov 文件
+    const increaseConcat = await new IncreaseConcat({
+      cwd: this.opts.cwd,
+      hash: this.baseDiffCommitInfo?.hash,
+    }).concat(...res);
+
+    this.lcov = increaseConcat.getRes();
   }
 
   /**
-   * 得到 GitLog 结果
+   * 通过 GitLog 的 since 值得到本次提交的记录
    */
-  private async getLog() {
+  private async getCommitInfoByLogSince(): Promise<(CommitInfo | undefined)> {
+    // 获得当月1号
     const subDate = dayjs(this.opts.since).subtract(1, 'day').format('YYYY-MM-DD');
 
     const res = await new LogParser({
       repo: this.opts.cwd as string,
-      until: subDate,
+
+      // before: 该日期之前的记录，更新的排在前面
+      // after: 该日期之后的记录，更新的排在前面
+      before: subDate,
     }).run();
 
-    [this.firstGitMessage] = res;
+    // 返回第一个值
+    return res[0];
   }
 
   /**
    * 通过 hash 值得到本次提交的记录
    */
-  private async getInfoByHash(hash: string) {
+  private async getCommitInfoByHash(hash: string): Promise<(CommitInfo | undefined)> {
     const result = await getGitRepoCommitInfoByHash(hash, this.opts.cwd);
 
-    if (result) {
-      this.firstGitMessage = result;
-    }
+    return result || undefined;
   }
 }
