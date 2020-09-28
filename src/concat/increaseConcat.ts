@@ -104,7 +104,9 @@ export class IncreaseConcat implements Concat {
           const diffLineArr: Array<number> = [];
           diffItem.hunks.forEach((hunk) => {
             hunk.changes.forEach((change) => {
-              if (change.type === 'insert' && change.lineNumber) {
+              // 只需要判断 insert 类型且有行号的的结果即可，
+              // 毕竟计算增量的目的是为了看存在，所以 delete 类型的不需要计算
+              if ((change.type === 'insert') && change.lineNumber) {
                 diffLineArr.push(change.lineNumber);
               }
             });

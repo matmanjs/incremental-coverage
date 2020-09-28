@@ -96,6 +96,7 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
       hash: this.baseDiffCommitInfo?.hash,
     }).concat(...res);
 
+    // 获得合并结果
     this.lcov = increaseConcat.getRes();
   }
 
