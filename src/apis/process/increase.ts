@@ -62,6 +62,11 @@ export class IncreaseProcess<T extends keyof Mapper> extends BaseProcess<T> {
     // 将首次提交的代码信息当做创建信息
     const createInfo = await this.getCreateInfo() as CommitInfo;
 
+    // 如果指定日期都没法获得，说明很可能在此日期之前确实没提交，此时将基准值设置为第一次提交
+    if (!this.baseDiffCommitInfo) {
+      this.baseDiffCommitInfo = createInfo;
+    }
+
     // 得到增量合并结果
     await this.getLcov();
 
