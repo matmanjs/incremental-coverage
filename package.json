@@ -1,6 +1,6 @@
 {
   "name": "incremental-coverage",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Merge lcov.info and get incremental coverage and full coverage",
   "main": "lib/index.js",
   "bin": {
