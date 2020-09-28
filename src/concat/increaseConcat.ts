@@ -14,6 +14,12 @@ export interface IncreaseConcatOpts {
   hash?: string;
 }
 
+interface LineNumberCheckItem {
+  delete?: string,
+  insert?: string,
+  normal?: string,
+}
+
 export class IncreaseConcat implements Concat {
   // 配置
   private opts: IncreaseConcatOpts = {};
@@ -101,15 +107,45 @@ export class IncreaseConcat implements Concat {
           };
 
           // 统计变换了的行号
-          const diffLineArr: Array<number> = [];
+          const diffInsertLineArr: Array<number> = [];
+          const lineNumberCheckMap: { [key: number]: LineNumberCheckItem } = {};
+
           diffItem.hunks.forEach((hunk) => {
             hunk.changes.forEach((change) => {
+              if (!change.lineNumber) {
+                return;
+              }
+
+              // 以行号为key，缓存下该行号 insert 或 delete 时的内容
+              const lineNumberCheckItem: LineNumberCheckItem = lineNumberCheckMap[change.lineNumber] || {};
+              lineNumberCheckItem[change.type] = change.content;
+              lineNumberCheckMap[change.lineNumber] = lineNumberCheckItem;
+
               // 只需要判断 insert 类型且有行号的的结果即可，
               // 毕竟计算增量的目的是为了看存在，所以 delete 类型的不需要计算
-              if ((change.type === 'insert') && change.lineNumber) {
-                diffLineArr.push(change.lineNumber);
+              if ((change.type === 'insert')) {
+                diffInsertLineArr.push(change.lineNumber);
               }
             });
+          });
+
+          // 注意一种特殊情况，如果某行既是 insert 且又是 delete，且 content 内容还是一模一样，则忽略该情况
+          // 公司内的增量覆盖率算法为上述处理策略，因此此处做统一，
+          // 虽然个人觉得不太合理，感觉只要是 delete 和 insert 应该都算增量变化，但需进一步研究
+          // 统计变换了的行号
+          const diffLineArr: Array<number> = [];
+          diffInsertLineArr.forEach((lineNumber) => {
+            const lineNumberCheckItem: LineNumberCheckItem = lineNumberCheckMap[lineNumber];
+
+            if (!lineNumberCheckItem) {
+              return;
+            }
+
+            if (lineNumberCheckItem.insert && lineNumberCheckItem.delete && (lineNumberCheckItem.insert === lineNumberCheckItem.delete)) {
+              return;
+            }
+
+            diffLineArr.push(lineNumber);
           });
 
           // 统计每行对应的hit数
