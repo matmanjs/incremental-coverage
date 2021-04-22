@@ -33,7 +33,8 @@ const fs = require('fs');
 const { getIncrease, getFull } = require('incremental-coverage');
 
 (async () => {
-  await getIncrease(
+  // 增量覆盖率，支持合并多个 lcov 文件
+  const res1 = await getIncrease(
     './e2e/coverage/lcov.info',
     {
       output: true,
@@ -42,13 +43,15 @@ const { getIncrease, getFull } = require('incremental-coverage');
       },
     }
   );
-
-  const res = await getFull([
+  fs.writeFileSync('./output1.json', JSON.stringify(res1, null, 2));
+  
+  // 全量覆盖率，可以支持合并多个 lcov 文件
+  const res2 = await getFull([
     './e2e/coverage/lcov.info',
     './coverage/lcov.info',
   ]);
 
-  fs.writeFileSync('./output1.json', JSON.stringify(res, null, 2));
+  fs.writeFileSync('./output2.json', JSON.stringify(res2, null, 2));
 })();
 ```
 
