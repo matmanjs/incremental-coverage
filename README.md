@@ -87,14 +87,14 @@ $ incremental-coverage -p="./.dwt_output/e2e/coverage/lcov.info" -t="2020-06-01"
     "abbrevHash": "26e3b93",
     "hash": "26e3b931cf165b73902e404d3adaaef973ac4609",
     "subject": "refactor: 临时注释tde的调试代码",
-    "authorName": "linjianghe",
+    "authorName": "helinjiang",
     "authorDate": "2020-07-31 09:55:35 +0800"
   },
   "createInfo": {
     "hash": "cc4f1e2f18a49cd8a30de0cb5087a709979c4631",
     "abbrevHash": "cc4f1e2",
-    "authorName": "linjianghe",
-    "authorEmail": "linjianghe@tencent.com",
+    "authorName": "helinjiang",
+    "authorEmail": "helinjiang@**.com",
     "authorDate": "Mon Apr 1 14:43:54 2019 +0800",
     "subject": "feat: init"
   }
